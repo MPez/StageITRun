@@ -1,0 +1,54 @@
+{
+  "stage" : [
+    {
+      "nome": "stage 1",
+      "azienda": "azienda 1 srl",
+      "descrizione": "descrizione lunga stage 1"
+    },
+    {
+      "nome": "stage 2",
+      "azienda": "azienda 2 srl",
+      "descrizione": "descrizione lunga stage 2"
+    },
+    {
+      "nome": "stage 3",
+      "azienda": "azienda 3 srl",
+      "descrizione": "descrizione lunga stage 3"
+    },
+    {
+      "nome": "stage 4",
+      "azienda": "azienda 4 srl",
+      "descrizione": "descrizione lunga stage 4"
+    },
+    {
+      "nome": "stage 5",
+      "azienda": "azienda 5 srl",
+      "descrizione": "descrizione lunga stage 5"
+    },
+    {
+      "nome": "stage 6",
+      "azienda": "azienda 6 srl",
+      "descrizione": "descrizione lunga stage 6"
+    },
+    {
+      "nome": "stage 7",
+      "azienda": "azienda 7 srl",
+      "descrizione": "descrizione lunga stage 7"
+    },
+    {
+      "nome": "stage 8",
+      "azienda": "azienda 8 srl",
+      "descrizione": "descrizione lunga stage 8"
+    },
+    {
+      "nome": "stage 9",
+      "azienda": "azienda 9 srl",
+      "descrizione": "descrizione lunga stage 9"
+    },
+    {
+      "nome": "stage 10",
+      "azienda": "azienda 10 srl",
+      "descrizione": "descrizione lunga stage 10"
+    }
+  ]
+}

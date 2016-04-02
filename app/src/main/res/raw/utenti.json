@@ -1,0 +1,24 @@
+{
+  "utenti" : [
+    {
+      "nome" : "Marco",
+      "cognome" : "Rossi"
+    },
+    {
+      "nome" : "Andrea",
+      "cognome" : "Verdi"
+    },
+    {
+      "nome" : "Luigi",
+      "cognome" : "Bianchi"
+    },
+    {
+      "nome" : "Antonio",
+      "cognome" : "Neri"
+    },
+    {
+      "nome" : "Paolo",
+      "cognome" : "Rossi"
+    }
+  ]
+}
