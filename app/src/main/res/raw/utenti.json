@@ -1,22 +1,27 @@
 {
   "utenti" : [
     {
+      "id" : "001",
       "nome" : "Marco",
       "cognome" : "Rossi"
     },
     {
+      "id" : "002",
       "nome" : "Andrea",
       "cognome" : "Verdi"
     },
     {
+      "id" : "003",
       "nome" : "Luigi",
       "cognome" : "Bianchi"
     },
     {
+      "id" : "004",
       "nome" : "Antonio",
       "cognome" : "Neri"
     },
     {
+      "id" : "005",
       "nome" : "Paolo",
       "cognome" : "Rossi"
     }
