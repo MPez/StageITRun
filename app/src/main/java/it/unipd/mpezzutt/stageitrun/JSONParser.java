@@ -1,7 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +26,8 @@ public class JSONParser {
     protected List readStageArray(JsonReader reader) throws IOException {
         List stageList = new ArrayList();
 
+        reader.beginObject();
+        reader.skipValue();
         reader.beginArray();
         while (reader.hasNext()) {
             stageList.add(readStage(reader));
