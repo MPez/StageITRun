@@ -1,13 +1,17 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import java.io.Serializable;
+
 /**
  * Created by marco on 04/04/16.
  */
-public class Stage {
+public class Stage implements Serializable {
     private int id;
     private String nome;
     private String azienda;
     private String descrizione;
+
+
 
     public Stage() {
         this.id = 0;

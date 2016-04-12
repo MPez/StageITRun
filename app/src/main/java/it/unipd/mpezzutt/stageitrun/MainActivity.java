@@ -1,10 +1,13 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.io.IOException;
@@ -20,15 +23,25 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView stageList = (ListView) findViewById(R.id.stage_listView);
+        ListView stageListView = (ListView) findViewById(R.id.stage_listView);
 
         JSONParser parser = new JSONParser();
 
         try {
             InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw", getPackageName()));
-            List stage = parser.readStageJSON(stageInput);
-            StageListAdapter stageAdapter = new StageListAdapter(this, stage);
-            stageList.setAdapter(stageAdapter);
+            List stageList = parser.readStageJSON(stageInput);
+            StageListAdapter stageAdapter = new StageListAdapter(this, stageList);
+            stageListView.setAdapter(stageAdapter);
+
+            stageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Stage item = (Stage) parent.getItemAtPosition(position);
+                    Intent stageSpecIntent = new Intent(parent.getContext(), StageSpecActivity.class);
+                    stageSpecIntent.putExtra("stage", item);
+                    startActivity(stageSpecIntent);
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,15 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
     }
 
     @Override
