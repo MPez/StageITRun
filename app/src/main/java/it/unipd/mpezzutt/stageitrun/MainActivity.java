@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw", getPackageName()));
-            List stageList = parser.readStageJSON(stageInput);
+            List stageList = parser.readJSON(stageInput);
             StageListAdapter stageAdapter = new StageListAdapter(this, stageList);
             stageListView.setAdapter(stageAdapter);
 

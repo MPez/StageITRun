@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/trophy_image"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:src="@drawable/trophy"/>
+
+    <TextView
+        android:id="@+id/trophy_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:text="@string/nome_trofeo"
+        android:textSize="16sp"
+        android:textColor="@color/textPrimaryColor"/>
+
+
+</LinearLayout>

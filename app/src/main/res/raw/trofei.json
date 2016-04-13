@@ -1,0 +1,44 @@
+{
+  "trofei": [
+    {
+      "nome":"trofeo 1",
+      "descrizione": "desrizione 1"
+    },
+    {
+      "nome":"trofeo 2",
+      "descrizione": "desrizione 2"
+    },
+    {
+      "nome":"trofeo 3",
+      "descrizione": "desrizione 3"
+    },
+    {
+      "nome":"trofeo 4",
+      "descrizione": "desrizione 4"
+    },
+    {
+      "nome":"trofeo 5",
+      "descrizione": "desrizione 5"
+    },
+    {
+      "nome":"trofeo 6",
+      "descrizione": "desrizione 6"
+    },
+    {
+      "nome":"trofeo 7",
+      "descrizione": "desrizione 7"
+    },
+    {
+      "nome":"trofeo 8",
+      "descrizione": "desrizione 8"
+    },
+    {
+      "nome":"trofeo 9",
+      "descrizione": "desrizione 9"
+    },
+    {
+      "nome":"trofeo 10",
+      "descrizione": "desrizione 10"
+    }
+  ]
+}

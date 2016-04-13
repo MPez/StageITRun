@@ -13,27 +13,41 @@ import java.util.List;
  */
 public class JSONParser {
 
-    public List readStageJSON (InputStream asset) throws IOException {
+    public List readJSON(InputStream asset) throws IOException {
         JsonReader reader = new JsonReader(new InputStreamReader(asset, "UTF-8"));
 
         try {
-            return readStageArray(reader);
+            return readArray(reader);
         } finally {
             reader.close();
         }
     }
 
-    protected List readStageArray(JsonReader reader) throws IOException {
-        List stageList = new ArrayList();
+    protected List readArray(JsonReader reader) throws IOException {
+        List list = new ArrayList();
 
         reader.beginObject();
-        reader.skipValue();
+        String objName = reader.nextName();
         reader.beginArray();
-        while (reader.hasNext()) {
-            stageList.add(readStage(reader));
+        switch (objName) {
+            case "stage":
+                while (reader.hasNext()) {
+                    list.add(readStage(reader));
+                }
+                break;
+            case "trofei":
+                while (reader.hasNext()) {
+                    list.add(readTrofeo(reader));
+                }
+                break;
+            case "utenti":
+                while (reader.hasNext()) {
+                    list.add(readUtente(reader));
+                }
+                break;
         }
         reader.endArray();
-        return stageList;
+        return list;
     }
 
     protected Stage readStage(JsonReader reader) throws IOException {
@@ -45,41 +59,51 @@ public class JSONParser {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (name.equals("id")) {
-                id = reader.nextString();
-            } else if (name.equals("nome")) {
-                nome = reader.nextString();
-            } else if (name.equals("azienda")) {
-                azienda = reader.nextString();
-            } else if (name.equals("descrizione")) {
-                descrizione = reader.nextString();
-            } else {
-                reader.skipValue();
+            switch (name) {
+                case "id":
+                    id = reader.nextString();
+                    break;
+                case "nome":
+                    nome = reader.nextString();
+                    break;
+                case "azienda":
+                    azienda = reader.nextString();
+                    break;
+                case "descrizione":
+                    descrizione = reader.nextString();
+                    break;
+                default:
+                    reader.skipValue();
             }
         }
         reader.endObject();
         return new Stage(id, nome, azienda, descrizione);
     }
 
-    public List readUtentiJSON (InputStream asset) throws IOException {
-        JsonReader reader = new JsonReader(new InputStreamReader(asset, "UTF-8"));
+    protected Trofeo readTrofeo(JsonReader reader) throws IOException {
+        String nome = null;
+        String descrizione = null;
+        String stato = null;
 
-        try {
-            return readUtentiArray(reader);
-        } finally {
-            reader.close();
-        }
-    }
-
-    protected List readUtentiArray(JsonReader reader) throws IOException {
-        List utentiList = new ArrayList();
-
-        reader.beginArray();
+        reader.beginObject();
         while (reader.hasNext()) {
-            utentiList.add(readUtente(reader));
+            String name = reader.nextName();
+            switch (name) {
+                case "nome":
+                    nome = reader.nextString();
+                    break;
+                case "descrizione":
+                    descrizione = reader.nextString();
+                    break;
+                case "stato":
+                    stato = reader.nextString();
+                    break;
+                default:
+                    reader.skipValue();
+            }
         }
-        reader.endArray();
-        return utentiList;
+        reader.endObject();
+        return new Trofeo(nome, descrizione);
     }
 
     protected Utente readUtente(JsonReader reader) throws IOException {
@@ -89,15 +113,19 @@ public class JSONParser {
 
         reader.beginObject();
         while (reader.hasNext()) {
-            String name = reader.nextName();
-            if (name.equals("id")) {
-                id = reader.nextString();
-            } else if (name.equals("nome")) {
-                nome = reader.nextString();
-            } else if (name.equals("azienda")) {
-                cognome = reader.nextString();
-            } else {
-                reader.skipValue();
+            String name = reader.nextString();
+            switch (name) {
+                case "id":
+                    id = reader.nextString();
+                    break;
+                case "nome":
+                    nome = reader.nextString();
+                    break;
+                case "cognome":
+                    cognome = reader.nextString();
+                    break;
+                default:
+                    reader.skipValue();
             }
         }
         reader.endObject();

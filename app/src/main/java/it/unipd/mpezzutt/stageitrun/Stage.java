@@ -11,8 +11,6 @@ public class Stage implements Serializable {
     private String azienda;
     private String descrizione;
 
-
-
     public Stage() {
         this.id = 0;
         this.nome = null;
