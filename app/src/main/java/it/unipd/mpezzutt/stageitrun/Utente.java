@@ -7,17 +7,23 @@ public class Utente {
     private int id;
     private String nome;
     private String cognome;
+    private String email;
+    private String password;
 
     public Utente() {
         this.id = 0;
         this.nome = null;
         this.cognome = null;
+        this.email = null;
+        this.password = null;
     }
 
-    public Utente (String id, String nome, String cognome) {
+    public Utente (String id, String nome, String cognome, String email, String password) {
         this.id = Integer.parseInt(id);
         this.nome = nome;
         this.cognome = cognome;
+        this.email = email;
+        this.password = password;
     }
 
     public void setId(String id) {
@@ -42,5 +48,21 @@ public class Utente {
 
     public String getCognome() {
         return cognome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

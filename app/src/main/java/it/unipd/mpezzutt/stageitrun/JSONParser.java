@@ -103,13 +103,15 @@ public class JSONParser {
             }
         }
         reader.endObject();
-        return new Trofeo(nome, descrizione);
+        return new Trofeo(nome, descrizione, stato);
     }
 
     protected Utente readUtente(JsonReader reader) throws IOException {
         String id = null;
         String nome = null;
         String cognome = null;
+        String email = null;
+        String password = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -124,12 +126,18 @@ public class JSONParser {
                 case "cognome":
                     cognome = reader.nextString();
                     break;
+                case "email":
+                    email = reader.nextString();
+                    break;
+                case "password":
+                    password = reader.nextString();
+                    break;
                 default:
                     reader.skipValue();
             }
         }
         reader.endObject();
-        return new Utente(id, nome, cognome);
+        return new Utente(id, nome, cognome, email, password);
     }
 }
 

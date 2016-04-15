@@ -33,7 +33,6 @@ public class TrophyListAdapter extends ArrayAdapter<List> {
         if (trofeo.getStato() == true) {
             trofeoView.setImageResource(R.drawable.trophy_checkmark);
         } else {
-
             trofeoView.setImageResource(R.drawable.trophy_close);
         }
         TextView nomeView = (TextView) itemView.findViewById(R.id.trophy_name);

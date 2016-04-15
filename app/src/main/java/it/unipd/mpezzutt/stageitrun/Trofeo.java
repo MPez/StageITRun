@@ -10,9 +10,10 @@ public class Trofeo implements Serializable {
     private String descrizione;
     private boolean stato;
 
-    public Trofeo(String nome, String descrizione) {
+    public Trofeo(String nome, String descrizione, String stato) {
         this.nome = nome;
         this.descrizione = descrizione;
+        this.stato = Boolean.parseBoolean(stato);
     }
 
     public String getNome() {
