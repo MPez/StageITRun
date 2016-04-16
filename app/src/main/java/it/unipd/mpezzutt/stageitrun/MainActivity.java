@@ -23,31 +23,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView stageListView = (ListView) findViewById(R.id.stage_listView);
+        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(loginIntent);
 
-        JSONParser parser = new JSONParser();
+//        Intent stageIntent = new Intent(getApplicationContext(), StageActivity.class);
+//        startActivity(stageIntent);
 
-        try {
-            InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw", getPackageName()));
-            List stageList = parser.readJSON(stageInput);
-            StageListAdapter stageAdapter = new StageListAdapter(this, stageList);
-            stageListView.setAdapter(stageAdapter);
-
-            stageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Stage item = (Stage) parent.getItemAtPosition(position);
-                    Intent stageSpecIntent = new Intent(parent.getContext(), StageSpecActivity.class);
-                    stageSpecIntent.putExtra("stage", item);
-                    startActivity(stageSpecIntent);
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
+//        Intent trophyIntent = new Intent(getApplicationContext(), TrophyActivity.class);
+//        startActivity(trophyIntent);
 
     }
 

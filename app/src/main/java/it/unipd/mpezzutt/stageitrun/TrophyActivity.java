@@ -20,7 +20,7 @@ public class TrophyActivity extends AppCompatActivity {
         JSONParser parser = new JSONParser();
 
         try {
-            InputStream trophyInput = getResources().openRawResource(getResources().getIdentifier("trofeo", "raw", getPackageName()));
+            InputStream trophyInput = getResources().openRawResource(getResources().getIdentifier("trofei", "raw", getPackageName()));
             List trophyList = parser.readJSON(trophyInput);
             TrophyListAdapter trophyAdapter = new TrophyListAdapter(this, trophyList);
             trophyListView.setAdapter(trophyAdapter);

@@ -115,7 +115,7 @@ public class JSONParser {
 
         reader.beginObject();
         while (reader.hasNext()) {
-            String name = reader.nextString();
+            String name = reader.nextName();
             switch (name) {
                 case "id":
                     id = reader.nextString();

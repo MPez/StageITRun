@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Stage IT Run</string>
     <string name="action_stage_spec">Dettagli stage</string>
+    <string name="activity_stage">Stage</string>
     <string name="action_trophy">Trofei</string>
     <string name="action_profile">Profilo utente</string>
     <string name="action_settings">Settings</string>
