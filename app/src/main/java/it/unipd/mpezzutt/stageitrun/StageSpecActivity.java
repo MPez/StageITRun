@@ -10,7 +10,7 @@ public class StageSpecActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stage_spec);
+        setContentView(R.layout.fragment_stage_spec);
 
         Intent intent = getIntent();
         Stage item = (Stage) intent.getSerializableExtra("stage");

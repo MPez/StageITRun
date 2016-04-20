@@ -1,15 +1,14 @@
 package it.unipd.mpezzutt.stageitrun;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -20,30 +19,56 @@ public class StageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stage);
+        setContentView(R.layout.fragment_stage_list);
 
-        ListView stageListView = (ListView) findViewById(R.id.stage_listView);
+//        ListView stageListView = (ListView) findViewById(R.id.android_list);
+//
+//        JSONParser parser = new JSONParser();
+//
+//        try {
+//            InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw", getPackageName()));
+//            List stageList = parser.readJSON(stageInput);
+//            StageListAdapter stageAdapter = new StageListAdapter(this, stageList);
+//            stageListView.setAdapter(stageAdapter);
+//
+//            stageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Stage item = (Stage) parent.getItemAtPosition(position);
+//                    Intent stageSpecIntent = new Intent(parent.getContext(), StageSpecActivity.class);
+//                    stageSpecIntent.putExtra("stage", item);
+//                    startActivity(stageSpecIntent);
+//                }
+//            });
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
 
-        JSONParser parser = new JSONParser();
+    class StageListAdapter extends ArrayAdapter<List> {
+        private final Context context;
+        private final List<Stage> stageList;
 
-        try {
-            InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw", getPackageName()));
-            List stageList = parser.readJSON(stageInput);
-            StageListAdapter stageAdapter = new StageListAdapter(this, stageList);
-            stageListView.setAdapter(stageAdapter);
+        public StageListAdapter (Context context, List stageList) {
+            super(context, -1, stageList);
+            this.context = context;
+            this.stageList = stageList;
+        }
 
-            stageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Stage item = (Stage) parent.getItemAtPosition(position);
-                    Intent stageSpecIntent = new Intent(parent.getContext(), StageSpecActivity.class);
-                    stageSpecIntent.putExtra("stage", item);
-                    startActivity(stageSpecIntent);
-                }
-            });
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View itemView = inflater.inflate(R.layout.stage_list_item, parent, false);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            Stage stage = stageList.get(position);
+            TextView aziendaView = (TextView) itemView.findViewById(R.id.azienda);
+            aziendaView.setText(stage.getAzienda());
+            TextView stageView = (TextView) itemView.findViewById(R.id.stage);
+            stageView.setText(stage.getNome());
+
+
+            return itemView;
         }
     }
 }

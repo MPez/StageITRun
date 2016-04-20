@@ -1,9 +1,11 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import java.io.Serializable;
+
 /**
  * Created by marco on 04/04/16.
  */
-public class Utente {
+public class Utente implements Serializable {
     private int id;
     private String nome;
     private String cognome;
