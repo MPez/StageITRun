@@ -1,7 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -102,7 +101,7 @@ public class StageFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Stage item = (Stage) l.getItemAtPosition(position);
-        mListener.onItemSelected(item);
+        mListener.onStageItemSelected(item);
     }
 
 
@@ -117,7 +116,7 @@ public class StageFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnStageFragmentInteraction {
-        void onItemSelected(Stage item);
+        void onStageItemSelected(Stage item);
     }
 
     class StageListAdapter extends ArrayAdapter<List> {

@@ -21,6 +21,11 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    private Utente utente;
+    private UserLogin login = UserLogin.getInstance();
+
+    static final int USER_LOGIN = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,26 +33,33 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (login.getUtente() != null) {
+            utente = login.getUtente();
+        } else {
+            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivityForResult(loginIntent, USER_LOGIN);
+        }
+
         viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
-
-//        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-//        startActivity(loginIntent);
-
-//        Intent stageIntent = new Intent(getApplicationContext(), StageActivity.class);
-//        startActivity(stageIntent);
-
-//        Intent trophyIntent = new Intent(getApplicationContext(), TrophyActivity.class);
-//        startActivity(trophyIntent);
-
     }
 
     @Override
-    public void onItemSelected(Stage item) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == USER_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                utente = (Utente) data.getSerializableExtra("utente");
+                login.setUtente(utente);
+            }
+        }
+    }
+
+    @Override
+    public void onStageItemSelected(Stage item) {
         Intent stageSpecIntent = new Intent(this, StageSpecActivity.class);
         stageSpecIntent.putExtra("stage", item);
         startActivity(stageSpecIntent);
@@ -55,9 +67,9 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
 
     private void setupViewPager (ViewPager viewPager) {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        Fragment stageFragment = StageFragment.newInstance(new Utente());
+        Fragment stageFragment = StageFragment.newInstance(utente);
         viewPagerAdapter.addFragment(stageFragment, "STAGE");
-        Fragment trofeoFragment = TrophyFragment.newInstance(new Utente());
+        Fragment trofeoFragment = TrophyFragment.newInstance(utente);
         viewPagerAdapter.addFragment(trofeoFragment, "TROFEI");
         viewPager.setAdapter(viewPagerAdapter);
     }

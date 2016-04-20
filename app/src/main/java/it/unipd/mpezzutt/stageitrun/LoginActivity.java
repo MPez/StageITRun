@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    private Utente utente;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -32,6 +33,14 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -127,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
@@ -141,6 +151,8 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+            boolean found = false;
+
             JSONParser parser = new JSONParser();
 
             try {
@@ -150,7 +162,11 @@ public class LoginActivity extends AppCompatActivity {
                 for (Utente utente : utentiList) {
                     if (utente.getEmail().equals(mEmail)) {
                         // Account exists, return true if the password matches.
-                        return utente.getPassword().equals(mPassword);
+                        if (utente.getPassword().equals(mPassword)) {
+                            setUtente(utente);
+                            found = true;
+                        }
+                        return found;
                     }
                 }
 
@@ -161,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
             // TODO: register the new account here.
-            return false;
+            return found;
         }
 
         @Override
@@ -169,10 +185,10 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
 
             if (success) {
-                //finish();
-
-
-                //Toast toast = Toast.makeText(getApplicationContext(), "Login successfull", Toast.LENGTH_SHORT);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                mainIntent.putExtra("utente", utente);
+                setResult(RESULT_OK, mainIntent);
+                finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
