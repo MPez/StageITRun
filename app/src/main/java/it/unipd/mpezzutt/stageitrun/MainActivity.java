@@ -1,5 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements StageFragment.OnStageFragmentInteraction {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -43,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
 //        Intent trophyIntent = new Intent(getApplicationContext(), TrophyActivity.class);
 //        startActivity(trophyIntent);
 
+    }
+
+    @Override
+    public void onItemSelected(Stage item) {
+        Intent stageSpecIntent = new Intent(this, StageSpecActivity.class);
+        stageSpecIntent.putExtra("stage", item);
+        startActivity(stageSpecIntent);
     }
 
     private void setupViewPager (ViewPager viewPager) {

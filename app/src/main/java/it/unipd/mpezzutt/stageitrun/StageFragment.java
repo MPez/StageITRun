@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * A simple {@link ListFragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StageFragment.OnFragmentInteractionListener} interface
+ * {@link OnStageFragmentInteraction} interface
  * to handle interaction events.
  * Use the {@link StageFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -29,7 +30,7 @@ public class StageFragment extends ListFragment {
     private Utente utente;
     private List<Stage> stageList;
 
-    private OnFragmentInteractionListener mListener;
+    private OnStageFragmentInteraction mListener;
 
     public StageFragment() {
     }
@@ -81,22 +82,15 @@ public class StageFragment extends ListFragment {
         getListView().setAdapter(stageListAdapter);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnStageFragmentInteraction) {
+            mListener = (OnStageFragmentInteraction) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnStageFragmentInteraction");
+        }
     }
 
     @Override
@@ -104,6 +98,13 @@ public class StageFragment extends ListFragment {
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Stage item = (Stage) l.getItemAtPosition(position);
+        mListener.onItemSelected(item);
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -115,9 +116,8 @@ public class StageFragment extends ListFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnStageFragmentInteraction {
+        void onItemSelected(Stage item);
     }
 
     class StageListAdapter extends ArrayAdapter<List> {

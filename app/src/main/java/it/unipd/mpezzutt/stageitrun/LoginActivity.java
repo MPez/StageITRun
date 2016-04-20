@@ -171,8 +171,6 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 //finish();
 
-                Intent stageIntent = new Intent(getApplicationContext(), StageActivity.class);
-                startActivity(stageIntent);
 
                 //Toast toast = Toast.makeText(getApplicationContext(), "Login successfull", Toast.LENGTH_SHORT);
             } else {

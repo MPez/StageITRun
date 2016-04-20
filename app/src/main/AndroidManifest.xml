@@ -27,17 +27,13 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".StageActivity"
-            android:label="@string/activity_stage" />
-        <activity
             android:name=".StageSpecActivity"
             android:label="@string/action_stage_spec"
-            android:parentActivityName=".StageActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="it.unipd.mpezzutt.stageitrun.StageActivity" />
+                android:value="it.unipd.mpezzutt.stageitrun.MainActivity" />
         </activity>
-        <activity android:name=".TrophyActivity" />
     </application>
 
 </manifest>
