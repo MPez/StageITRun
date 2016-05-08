@@ -138,10 +138,10 @@ public class TrophyFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View itemView = inflater.inflate(R.layout.trophy_list_item, parent, false);
-
+            
             Trofeo trofeo = trofeoList.get(position);
             ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophy_image);
-            if (trofeo.getStato() == true) {
+            if (utente.getTrofei().contains(trofeo)) {
                 trofeoView.setImageResource(R.drawable.trophy_checkmark);
             } else {
                 trofeoView.setImageResource(R.drawable.trophy_close);

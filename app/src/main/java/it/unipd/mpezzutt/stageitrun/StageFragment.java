@@ -1,5 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -9,6 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,11 +35,13 @@ import java.util.List;
 public class StageFragment extends ListFragment {
 
     private static final String ARG_PARAM1 = "utente";
-
     private Utente utente;
+
     private List<Stage> stageList;
 
     private OnStageFragmentInteraction mListener;
+
+    private RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
 
     public StageFragment() {
     }
@@ -56,7 +68,25 @@ public class StageFragment extends ListFragment {
             utente = (Utente) getArguments().getSerializable(ARG_PARAM1);
         }
 
-        JSONParser parser = new JSONParser();
+        final JSONParser parser = new JSONParser();
+
+        String stageUrl = "/stage";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, stageUrl, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        stageList = parser.readJSON(response, "stage");
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+
 
         try {
             InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw",getActivity().getPackageName()));

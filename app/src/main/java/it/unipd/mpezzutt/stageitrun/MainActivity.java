@@ -12,17 +12,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements StageFragment.OnStageFragmentInteraction {
 
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-
     private Utente utente;
-    private UserLogin login = UserLogin.getInstance();
+    private UserLogin userLogin;
+
+    private RequestQueue queue = RequestQueueSingleton.getInstance(this.getApplicationContext()).getRequestQueue();
+
 
     static final int USER_LOGIN = 0;
 
@@ -30,20 +32,20 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (login.getUtente() != null) {
-            utente = login.getUtente();
+        if (userLogin.getUtente() != null) {
+            utente = userLogin.getUtente();
         } else {
             Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(loginIntent, USER_LOGIN);
         }
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
     }
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
         if (requestCode == USER_LOGIN) {
             if (resultCode == RESULT_OK) {
                 utente = (Utente) data.getSerializableExtra("utente");
-                login.setUtente(utente);
+                userLogin = userLogin.getInstance(utente);
             }
         }
     }
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_qrcode) {
+            Intent intent = new Intent();
         }
 
         return super.onOptionsItemSelected(item);

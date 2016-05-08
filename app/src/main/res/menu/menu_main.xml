@@ -4,6 +4,13 @@
     tools:context="it.unipd.mpezzutt.stageitrun.MainActivity">
 
     <item
+        android:id="@+id/action_qrcode"
+        android:orderInCategory="10"
+        android:icon="@drawable/ic_photo_camera_white"
+        android:title="QR Code"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

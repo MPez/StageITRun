@@ -1,19 +1,41 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
  * Created by marco on 13/04/16.
  */
 public class Trofeo implements Serializable {
+    private String id;
     private String nome;
     private String descrizione;
-    private boolean stato;
+    private String descrLunga;
 
-    public Trofeo(String nome, String descrizione, String stato) {
+    public Trofeo(String id, String nome, String descrizione, String descrLunga) {
+        this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
-        this.stato = Boolean.parseBoolean(stato);
+        this.descrLunga = descrLunga;
+    }
+
+    public static Trofeo toTrofeo(JSONObject object) throws JSONException {
+        String id = object.getString("_id");
+        String nome = object.getString("nome");
+        String descrizione = object.getString("descrizione");
+        String descLunga = object.getString("descrizione_lunga");
+
+        return new Trofeo(id, nome, descrizione, descLunga);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -32,11 +54,11 @@ public class Trofeo implements Serializable {
         this.descrizione = descrizione;
     }
 
-    public boolean getStato() {
-        return stato;
+    public String getDescrLunga() {
+        return descrLunga;
     }
 
-    public void setStato(String stato) {
-        this.stato = Boolean.parseBoolean(stato);
+    public void setDescrLunga(String descrLunga) {
+        this.descrLunga = descrLunga;
     }
 }

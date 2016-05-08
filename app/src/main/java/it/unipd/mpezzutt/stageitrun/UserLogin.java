@@ -7,17 +7,20 @@ import android.app.Application;
  */
 public class UserLogin {
     private Utente utente;
-    private static final UserLogin user = new UserLogin();
+    private static UserLogin userLogin;
 
-    public static UserLogin getInstance() {
-        return user;
+    private UserLogin(Utente utente) {
+        this.utente = utente;
+    }
+
+    public static synchronized UserLogin getInstance(Utente utente) {
+        if (userLogin == null) {
+            userLogin = new UserLogin(utente);
+        }
+        return userLogin;
     }
 
     public Utente getUtente() {
         return utente;
-    }
-
-    public void setUtente(Utente utente) {
-        this.utente = utente;
     }
 }
