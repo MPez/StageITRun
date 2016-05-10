@@ -13,7 +13,7 @@ public class RequestQueueSingleton {
     private static RequestQueueSingleton mInstance;
     private RequestQueue mRequestQueue;
 
-    private static String URL = "http://localhost";
+    private String URL = "http://192.168.1.2:3000";
 
     private static Context mCtx;
 
@@ -42,7 +42,7 @@ public class RequestQueueSingleton {
         getRequestQueue().add(req);
     }
 
-    public static String getURL() {
+    public String getURL() {
         return URL;
     }
 }

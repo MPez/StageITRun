@@ -21,10 +21,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements StageFragment.OnStageFragmentInteraction {
 
     private Utente utente;
-    private UserLogin userLogin;
-
-    private RequestQueue queue = RequestQueueSingleton.getInstance(this.getApplicationContext()).getRequestQueue();
-
+    private UserLogin userLogin = UserLogin.getInstance();
 
     static final int USER_LOGIN = 0;
 
@@ -42,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
             startActivityForResult(loginIntent, USER_LOGIN);
         }
 
+        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(this.getApplicationContext());
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
         if (requestCode == USER_LOGIN) {
             if (resultCode == RESULT_OK) {
                 utente = (Utente) data.getSerializableExtra("utente");
-                userLogin = userLogin.getInstance(utente);
+                userLogin.setUtente(utente);
             }
         }
     }

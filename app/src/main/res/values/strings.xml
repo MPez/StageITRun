@@ -12,6 +12,8 @@
     <string name="nome_stage">Nome stage</string>
     <string name="descrizione">Descrizione stage</string>
 
+    <string name="no_data_stage">Nessuno stage presente</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

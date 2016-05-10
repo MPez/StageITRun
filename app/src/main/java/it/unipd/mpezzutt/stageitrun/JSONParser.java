@@ -18,8 +18,10 @@ import java.util.List;
  */
 public class JSONParser {
 
-    public List readJSON(JSONArray jsonArray, String tipo) throws JSONException {
+    public List readJSON(JSONObject jsonObject, String tipo) throws JSONException {
         List list = new ArrayList();
+
+        JSONArray jsonArray = jsonObject.getJSONArray(tipo);
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);

@@ -141,7 +141,8 @@ public class TrophyFragment extends Fragment {
             
             Trofeo trofeo = trofeoList.get(position);
             ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophy_image);
-            if (utente.getTrofei().contains(trofeo)) {
+            //if (utente.getTrofei().contains(trofeo)) {
+            if (false) {
                 trofeoView.setImageResource(R.drawable.trophy_checkmark);
             } else {
                 trofeoView.setImageResource(R.drawable.trophy_close);

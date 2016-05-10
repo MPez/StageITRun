@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,11 +41,10 @@ public class StageFragment extends ListFragment {
     private static final String ARG_PARAM1 = "utente";
     private Utente utente;
 
-    private List<Stage> stageList;
+    private List<Stage> stageList = new ArrayList<>();
 
     private OnStageFragmentInteraction mListener;
-
-    private RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+    private StageListAdapter stageListAdapter;
 
     public StageFragment() {
     }
@@ -64,19 +67,31 @@ public class StageFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+
         if (getArguments() != null) {
             utente = (Utente) getArguments().getSerializable(ARG_PARAM1);
         }
+
+        stageListAdapter = new StageListAdapter(getActivity());
+        this.setListAdapter(stageListAdapter);
 
         final JSONParser parser = new JSONParser();
 
         String stageUrl = "/stage";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, stageUrl, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, queue.getURL() + stageUrl, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        stageList = parser.readJSON(response, "stage");
+                        try {
+                            stageList = parser.readJSON(response, "stage");
+                            stageListAdapter.addAll(stageList);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        stageListAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
 
@@ -87,13 +102,16 @@ public class StageFragment extends ListFragment {
                     }
                 });
 
+        queue.addToRequestQueue(jsObjRequest);
 
-        try {
-            InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw",getActivity().getPackageName()));
-            stageList = parser.readJSON(stageInput);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+//        try {
+//            InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw",getActivity().getPackageName()));
+//            stageList = parser.readJSON(stageInput);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -107,8 +125,7 @@ public class StageFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        StageListAdapter stageListAdapter = new StageListAdapter(getActivity(), stageList);
-        getListView().setAdapter(stageListAdapter);
+
     }
 
     @Override
@@ -149,9 +166,15 @@ public class StageFragment extends ListFragment {
         void onStageItemSelected(Stage item);
     }
 
-    class StageListAdapter extends ArrayAdapter<List> {
+    class StageListAdapter extends ArrayAdapter<Stage> {
         private final Context context;
-        private final List<Stage> stageList;
+        private List<Stage> stageList;
+
+        public StageListAdapter(Context context) {
+            super(context, -1);
+            this.context = context;
+            this.stageList = new ArrayList<>();
+        }
 
         public StageListAdapter (Context context, List stageList) {
             super(context, -1, stageList);
@@ -164,14 +187,43 @@ public class StageFragment extends ListFragment {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View itemView = inflater.inflate(R.layout.stage_list_item, parent, false);
 
-            Stage stage = stageList.get(position);
-            TextView aziendaView = (TextView) itemView.findViewById(R.id.azienda);
-            aziendaView.setText(stage.getAzienda());
-            TextView stageView = (TextView) itemView.findViewById(R.id.stage);
-            stageView.setText(stage.getNome());
-
+            if (stageList != null) {
+                Stage stage = stageList.get(position);
+                TextView aziendaView = (TextView) itemView.findViewById(R.id.azienda);
+                aziendaView.setText(stage.getAzienda());
+                TextView stageView = (TextView) itemView.findViewById(R.id.stage);
+                stageView.setText(stage.getNome());
+            }
 
             return itemView;
+        }
+
+        @Override
+        public int getCount() {
+            if(stageList != null) {
+                return stageList.size();
+            }
+            else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void addAll(Collection<? extends Stage> collection) {
+            stageList.addAll(collection);
+        }
+
+        @Override
+        public void addAll(Stage... items) {
+            stageList.clear();
+            for (Stage item : items) {
+                stageList.add(item);
+            }
+        }
+
+        @Override
+        public Stage getItem(int position) {
+            return stageList.get(position);
         }
     }
 }
