@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -75,11 +76,11 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
 
         //JSONParser parser = new JSONParser();
 
-        String trofeoUrl = "/trophy";
+        String trofeoUrl = queue.getURL() + "/trophy";
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, queue.getURL() + trofeoUrl, null, new Response.Listener<JSONArray>() {
-
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
+                trofeoUrl, null,
+                new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
@@ -93,12 +94,11 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                         }
                         trophyListAdapter.notifyDataSetChanged();
                     }
-                }, new Response.ErrorListener() {
-
+                },
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 

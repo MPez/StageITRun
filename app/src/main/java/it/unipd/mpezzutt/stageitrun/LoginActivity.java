@@ -1,5 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,38 +15,54 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private Utente utente;
+//    private Utente utente;
+    private UserLogin userLogin;
+    private RequestQueueSingleton queue;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+//    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
 
-    public Utente getUtente() {
-        return utente;
-    }
+//    public Utente getUtente() {
+//        return utente;
+//    }
 
-    public void setUtente(Utente utente) {
-        this.utente = utente;
-    }
+//    public void setUtente(Utente utente) {
+//        this.utente = utente;
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        userLogin = UserLogin.getInstance();
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -77,17 +94,17 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+//        if (mAuthTask != null) {
+//            return;
+//        }
 
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -117,9 +134,68 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            //mAuthTask = new UserLoginTask(email, password);
+            //mAuthTask.execute((Void) null);
+
+
+            queue = RequestQueueSingleton.getInstance(getApplicationContext());
+            String userUrl = queue.getURL() + "/user";
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, userUrl,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            if (response.equals("success")) {
+                                retrieveUser(email);
+
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("email", email);
+                    map.put("password", password);
+                    return map;
+                }
+            };
+
+            queue.addToRequestQueue(stringRequest);
         }
+    }
+
+    private void retrieveUser(String email) {
+        queue = RequestQueueSingleton.getInstance(getApplicationContext());
+
+        String userUrl = queue.getURL() + "/user/:" + email;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                userUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            userLogin.setUtente(Utente.toUtente(response));
+                            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(mainIntent);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.addToRequestQueue(jsonObjectRequest);
     }
 
     private boolean isEmailValid(String email) {
@@ -137,68 +213,68 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            boolean found = false;
-
-            JSONParser parser = new JSONParser();
-
-            try {
-                InputStream utentiInput = getResources().openRawResource(getResources().getIdentifier("utenti", "raw", getPackageName()));
-                List<Utente> utentiList = parser.readJSON(utentiInput);
-
-                for (Utente utente : utentiList) {
-                    if (utente.getEmail().equals(mEmail)) {
-                        // Account exists, return true if the password matches.
-                        if (utente.getPassword().equals(mPassword)) {
-                            setUtente(utente);
-                            found = true;
-                        }
-                        return found;
-                    }
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-
-            // TODO: register the new account here.
-            return found;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-
-            if (success) {
-                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                mainIntent.putExtra("utente", utente);
-                setResult(RESULT_OK, mainIntent);
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-        }
-    }
+//    class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+//
+//        private final String mEmail;
+//        private final String mPassword;
+//
+//        UserLoginTask(String email, String password) {
+//            mEmail = email;
+//            mPassword = password;
+//        }
+//
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+//            // TODO: attempt authentication against a network service.
+//
+//            boolean found = false;
+//
+//            JSONParser parser = new JSONParser();
+//
+//            try {
+//                InputStream utentiInput = getResources().openRawResource(getResources().getIdentifier("utenti", "raw", getPackageName()));
+//                List<Utente> utentiList = parser.readJSON(utentiInput);
+//
+//                for (Utente utente : utentiList) {
+//                    if (utente.getEmail().equals(mEmail)) {
+//                        // Account exists, return true if the password matches.
+//                        if (utente.getPassword().equals(mPassword)) {
+//                            setUtente(utente);
+//                            found = true;
+//                        }
+//                        return found;
+//                    }
+//                }
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//
+//            // TODO: register the new account here.
+//            return found;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(final Boolean success) {
+//            mAuthTask = null;
+//
+//            if (success) {
+//                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                mainIntent.putExtra("utente", userLogin.getUtente());
+//                setResult(RESULT_OK, mainIntent);
+//                finish();
+//            } else {
+//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                mPasswordView.requestFocus();
+//            }
+//        }
+//
+//        @Override
+//        protected void onCancelled() {
+//            mAuthTask = null;
+//        }
+//    }
 }
 

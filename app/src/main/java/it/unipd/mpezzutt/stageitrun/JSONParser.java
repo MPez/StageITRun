@@ -155,7 +155,6 @@ public class JSONParser {
         String nome = null;
         String cognome = null;
         String email = null;
-        String password = null;
         List<String> stages = null;
         List<String> trofei = null;
 
@@ -175,9 +174,6 @@ public class JSONParser {
                 case "email":
                     email = reader.nextString();
                     break;
-                case "password":
-                    password = reader.nextString();
-                    break;
                 case "stage_id":
                     stages = readStringArray(reader);
                     break;
@@ -189,7 +185,7 @@ public class JSONParser {
             }
         }
         reader.endObject();
-        return new Utente(id, nome, cognome, email, password, stages, trofei);
+        return new Utente(id, nome, cognome, email, stages, trofei);
     }
 
     protected List<String> readStringArray(JsonReader reader) throws IOException {

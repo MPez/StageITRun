@@ -8,9 +8,12 @@ import android.app.Application;
 
 public class UserLogin {
     private Utente utente;
-    private static final UserLogin user = new UserLogin();
+    private static UserLogin user;
 
     public static UserLogin getInstance() {
+        if (user == null) {
+            user = new UserLogin();
+        }
         return user;
     }
 

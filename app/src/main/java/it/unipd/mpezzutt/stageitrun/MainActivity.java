@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity
         TrophyFragment.OnTrophyFragmentInteraction {
 
     private Utente utente;
-    private UserLogin userLogin = UserLogin.getInstance();
+    private UserLogin userLogin;
 
     static final int USER_LOGIN = 0;
 
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        userLogin = UserLogin.getInstance();
 
         if (userLogin.getUtente() != null) {
             utente = userLogin.getUtente();

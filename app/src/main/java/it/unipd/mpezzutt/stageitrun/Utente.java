@@ -15,7 +15,6 @@ public class Utente implements Serializable {
     private String nome;
     private String cognome;
     private String email;
-    private String password;
     private List<String> stages;
     private List<String> trofei;
 
@@ -24,17 +23,15 @@ public class Utente implements Serializable {
         this.nome = null;
         this.cognome = null;
         this.email = null;
-        this.password = null;
         this.stages = new ArrayList<String>();
         this.trofei = new ArrayList<String>();
     }
 
-    public Utente (String id, String nome, String cognome, String email, String password, List<String> stages, List<String> trofei) {
+    public Utente (String id, String nome, String cognome, String email,  List<String> stages, List<String> trofei) {
         this.id = id;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
-        this.password = password;
         this.stages = stages;
         this.trofei = trofei;
     }
@@ -44,11 +41,10 @@ public class Utente implements Serializable {
         String nome = object.getString("nome");
         String cognome = object.getString("cognome");
         String email = object.getString("email");
-        String password = object.getString("password");
         List<String> stages = JSONParser.toList(object.optJSONArray("stage_id"));
         List<String> trofei = JSONParser.toList(object.optJSONArray("trofei_id"));
 
-        return new Utente(id, nome, cognome, email, password, stages, trofei);
+        return new Utente(id, nome, cognome, email, stages, trofei);
     }
 
     public void setId(String id) {
@@ -81,14 +77,6 @@ public class Utente implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<String> getStages() {

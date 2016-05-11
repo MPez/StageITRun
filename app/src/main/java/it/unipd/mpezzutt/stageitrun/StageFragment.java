@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -80,12 +81,12 @@ public class StageFragment extends ListFragment {
 
         //final JSONParser parser = new JSONParser();
 
-        String stageUrl = "/stage";
+        String stageUrl = queue.getURL() + "/stage";
         //String stageListUrl = "/stage/list";
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, queue.getURL() + stageUrl, null, new Response.Listener<JSONArray>() {
-
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
+                stageUrl, null,
+                new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
@@ -102,12 +103,11 @@ public class StageFragment extends ListFragment {
                         }
                         stageListAdapter.notifyDataSetChanged();
                     }
-                }, new Response.ErrorListener() {
-
+                },
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 
