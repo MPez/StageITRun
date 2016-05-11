@@ -69,4 +69,6 @@ public class Stage implements Serializable {
     public String getDescrizione() {
         return descrizione;
     }
+
+
 }

@@ -16,9 +16,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,13 +42,12 @@ public class StageFragment extends ListFragment {
 
     private static final String ARG_PARAM1 = "utente";
     private Utente utente;
-
-    private List<Stage> stageList = new ArrayList<>();
-
-    private OnStageFragmentInteraction mListener;
+    private List<Stage> stageList;
     private StageListAdapter stageListAdapter;
+    private OnStageFragmentInteraction mListener;
 
     public StageFragment() {
+        stageList = new ArrayList<>();
     }
 
     /**
@@ -74,20 +75,28 @@ public class StageFragment extends ListFragment {
             utente = (Utente) getArguments().getSerializable(ARG_PARAM1);
         }
 
-        stageListAdapter = new StageListAdapter(getActivity());
+        stageListAdapter = new StageListAdapter(getActivity(), stageList);
         this.setListAdapter(stageListAdapter);
 
-        final JSONParser parser = new JSONParser();
+        //final JSONParser parser = new JSONParser();
 
         String stageUrl = "/stage";
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, queue.getURL() + stageUrl, null, new Response.Listener<JSONObject>() {
+        //String stageListUrl = "/stage/list";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, queue.getURL() + stageUrl, null, new Response.Listener<JSONArray>() {
 
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         try {
-                            stageList = parser.readJSON(response, "stage");
-                            stageListAdapter.addAll(stageList);
+                            //stageList = parser.readJSON(response, "stage");
+                            //stageListAdapter.addAll(stageList);
+
+                            for (int i = 0; i < response.length(); i++) {
+                                stageListAdapter.add(Stage.toStage(response.getJSONObject(i)));
+                            }
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -102,7 +111,7 @@ public class StageFragment extends ListFragment {
                     }
                 });
 
-        queue.addToRequestQueue(jsObjRequest);
+        queue.addToRequestQueue(jsonArrayRequest);
 
 
 
@@ -168,18 +177,19 @@ public class StageFragment extends ListFragment {
 
     class StageListAdapter extends ArrayAdapter<Stage> {
         private final Context context;
-        private List<Stage> stageList;
+        //private List<Stage> stageList;
 
         public StageListAdapter(Context context) {
             super(context, -1);
             this.context = context;
-            this.stageList = new ArrayList<>();
+            //this.stageList = new ArrayList<>();
         }
 
-        public StageListAdapter (Context context, List stageList) {
+        public StageListAdapter (Context context, List<Stage> stageList) {
             super(context, -1, stageList);
             this.context = context;
-            this.stageList = stageList;
+            //this.stageList = stageList;
+            StageFragment.this.stageList = stageList;
         }
 
         @Override
@@ -200,7 +210,7 @@ public class StageFragment extends ListFragment {
 
         @Override
         public int getCount() {
-            if(stageList != null) {
+            if (stageList != null) {
                 return stageList.size();
             }
             else {
@@ -219,6 +229,11 @@ public class StageFragment extends ListFragment {
             for (Stage item : items) {
                 stageList.add(item);
             }
+        }
+
+        @Override
+        public void add(Stage object) {
+            stageList.add(object);
         }
 
         @Override

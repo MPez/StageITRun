@@ -8,29 +8,31 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="it.unipd.mpezzutt.stageitrun.StageSpecActivity">
+    tools:context="it.unipd.mpezzutt.stageitrun.TrophySpecActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/trophyImageSpec"
+        android:src="@drawable/trophy"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/nome_azienda"
-        android:id="@+id/nomeAzienda" />
+        android:layout_height="240dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"/>
 
     <TextView
+        android:id="@+id/trophyNameSpec"
+        android:text="@string/nome_trofeo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/small_padding"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/nome_stage"
-        android:id="@+id/nomeStage"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/trophyDescriptionSpec"
+        android:text="@string/descrizione_trofeo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/medium_padding"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/descrizione"
-        android:id="@+id/stageSpec" />
+        android:paddingTop="@dimen/small_padding"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 </LinearLayout>

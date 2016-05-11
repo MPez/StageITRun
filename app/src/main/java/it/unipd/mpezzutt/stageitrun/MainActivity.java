@@ -18,7 +18,9 @@ import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements StageFragment.OnStageFragmentInteraction {
+public class MainActivity extends AppCompatActivity
+        implements StageFragment.OnStageFragmentInteraction,
+        TrophyFragment.OnTrophyFragmentInteraction {
 
     private Utente utente;
     private UserLogin userLogin = UserLogin.getInstance();
@@ -64,6 +66,13 @@ public class MainActivity extends AppCompatActivity implements StageFragment.OnS
         Intent stageSpecIntent = new Intent(this, StageSpecActivity.class);
         stageSpecIntent.putExtra("stage", item);
         startActivity(stageSpecIntent);
+    }
+
+    @Override
+    public void onTrophyItemSelected(Trofeo item) {
+        Intent trophySpecIntent = new Intent(this, TrophySpecActivity.class);
+        trophySpecIntent.putExtra("trofeo", item);
+        startActivity(trophySpecIntent);
     }
 
     private void setupViewPager (ViewPager viewPager) {

@@ -10,16 +10,16 @@ public class StageSpecActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_stage_spec);
+        setContentView(R.layout.activity_stage_spec);
 
         Intent intent = getIntent();
         Stage item = (Stage) intent.getSerializableExtra("stage");
 
-        TextView title = (TextView) findViewById(R.id.nomeAzienda);
+        TextView title = (TextView) findViewById(R.id.nomeAziendaSpec);
         title.setText(item.getAzienda());
-        TextView subtitle = (TextView) findViewById(R.id.nomeStage);
+        TextView subtitle = (TextView) findViewById(R.id.nomeStageSpec);
         subtitle.setText(item.getNome());
-        TextView body = (TextView) findViewById(R.id.stageSpec);
+        TextView body = (TextView) findViewById(R.id.stageDescriptionSpec);
         body.setText(item.getDescrizione());
     }
 }

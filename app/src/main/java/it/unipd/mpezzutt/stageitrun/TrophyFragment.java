@@ -8,33 +8,41 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TrophyFragment.OnFragmentInteractionListener} interface
+ * {@link TrophyFragment.OnTrophyFragmentInteraction} interface
  * to handle interaction events.
  * Use the {@link TrophyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TrophyFragment extends Fragment {
+public class TrophyFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final String ARG_PARAM1 = "utente";
-
     private Utente utente;
     private List<Trofeo> trofeoList;
-
-    private OnFragmentInteractionListener mListener;
+    TrophyListAdapter trophyListAdapter;
+    private OnTrophyFragmentInteraction mListener;
 
     public TrophyFragment() {
+        trofeoList = new ArrayList<>();
     }
 
     /**
@@ -55,18 +63,53 @@ public class TrophyFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+
         if (getArguments() != null) {
             utente = (Utente) getArguments().getSerializable(ARG_PARAM1);
         }
 
-        JSONParser parser = new JSONParser();
+        trophyListAdapter = new TrophyListAdapter(getActivity(), trofeoList);
 
-        try {
-            InputStream trofeoInput = getResources().openRawResource(getResources().getIdentifier("trofei", "raw", getActivity().getPackageName()));
-            trofeoList = parser.readJSON(trofeoInput);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        //JSONParser parser = new JSONParser();
+
+        String trofeoUrl = "/trophy";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, queue.getURL() + trofeoUrl, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+
+                            for (int i = 0; i < response.length(); i++) {
+                                trophyListAdapter.add(Trofeo.toTrofeo(response.getJSONObject(i)));
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        trophyListAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+
+        queue.addToRequestQueue(jsonArrayRequest);
+
+//        try {
+//            InputStream trofeoInput = getResources().openRawResource(getResources().getIdentifier("trofei", "raw", getActivity().getPackageName()));
+//            trofeoList = parser.readJSON(trofeoInput);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -80,27 +123,26 @@ public class TrophyFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        TrophyListAdapter trophyListAdapter = new TrophyListAdapter(getActivity(), trofeoList);
         GridView gridView = (GridView) getActivity().findViewById(R.id.trophy_GridView);
         gridView.setAdapter(trophyListAdapter);
+        gridView.setOnItemClickListener(this);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Trofeo item = (Trofeo) parent.getItemAtPosition(position);
+        mListener.onTrophyItemSelected(item);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnStageFragmentInteraction) {
-//            mListener = (OnStageFragmentInteraction) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnStageFragmentInteraction");
-//        }
+        if (context instanceof OnTrophyFragmentInteraction) {
+            mListener = (OnTrophyFragmentInteraction) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnStageFragmentInteraction");
+        }
     }
 
     @Override
@@ -119,19 +161,19 @@ public class TrophyFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnTrophyFragmentInteraction {
+        void onTrophyItemSelected(Trofeo item);
     }
 
-    public class TrophyListAdapter extends ArrayAdapter<List> {
+    class TrophyListAdapter extends ArrayAdapter<Trofeo> {
         private final Context context;
-        private final List<Trofeo> trofeoList;
+        //private final List<Trofeo> trofeoList;
 
-        public TrophyListAdapter (Context context, List trofeoList) {
+        public TrophyListAdapter (Context context, List<Trofeo> trofeoList) {
             super(context, -1, trofeoList);
             this.context = context;
-            this.trofeoList = trofeoList;
+            //this.trofeoList = trofeoList;
+            TrophyFragment.this.trofeoList = trofeoList;
         }
 
         @Override
@@ -140,17 +182,37 @@ public class TrophyFragment extends Fragment {
             View itemView = inflater.inflate(R.layout.trophy_list_item, parent, false);
             
             Trofeo trofeo = trofeoList.get(position);
-            ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophy_image);
+            ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophyImage);
             //if (utente.getTrofei().contains(trofeo)) {
             if (false) {
                 trofeoView.setImageResource(R.drawable.trophy_checkmark);
             } else {
                 trofeoView.setImageResource(R.drawable.trophy_close);
             }
-            TextView nomeView = (TextView) itemView.findViewById(R.id.trophy_name);
+            TextView nomeView = (TextView) itemView.findViewById(R.id.trophyName);
             nomeView.setText(trofeo.getNome());
 
             return itemView;
+        }
+
+        @Override
+        public int getCount() {
+            if (trofeoList != null) {
+                return trofeoList.size();
+            }
+            else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void add(Trofeo object) {
+            trofeoList.add(object);
+        }
+
+        @Override
+        public Trofeo getItem(int position) {
+            return trofeoList.get(position);
         }
     }
 }
