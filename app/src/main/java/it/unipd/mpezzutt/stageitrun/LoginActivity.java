@@ -1,10 +1,9 @@
 package it.unipd.mpezzutt.stageitrun;
 
-import android.app.DownloadManager;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,10 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,26 +32,13 @@ import java.util.Map;
  */
 public class LoginActivity extends AppCompatActivity {
 
-//    private Utente utente;
     private UserLogin userLogin;
     private RequestQueueSingleton queue;
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-//    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
-
-//    public Utente getUtente() {
-//        return utente;
-//    }
-
-//    public void setUtente(Utente utente) {
-//        this.utente = utente;
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
     }
 
 
@@ -94,9 +78,6 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -132,11 +113,6 @@ public class LoginActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            //mAuthTask = new UserLoginTask(email, password);
-            //mAuthTask.execute((Void) null);
-
 
             queue = RequestQueueSingleton.getInstance(getApplicationContext());
             String userUrl = queue.getURL() + "/user";
@@ -147,14 +123,13 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             if (response.equals("success")) {
                                 retrieveUser(email);
-
                             }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
+                            Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                         }
                     }) {
                 @Override
@@ -182,8 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             userLogin.setUtente(Utente.toUtente(response));
-                            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(mainIntent);
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -208,73 +182,5 @@ public class LoginActivity extends AppCompatActivity {
         return password.length() > 4;
     }
 
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-//    class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-//
-//        private final String mEmail;
-//        private final String mPassword;
-//
-//        UserLoginTask(String email, String password) {
-//            mEmail = email;
-//            mPassword = password;
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            // TODO: attempt authentication against a network service.
-//
-//            boolean found = false;
-//
-//            JSONParser parser = new JSONParser();
-//
-//            try {
-//                InputStream utentiInput = getResources().openRawResource(getResources().getIdentifier("utenti", "raw", getPackageName()));
-//                List<Utente> utentiList = parser.readJSON(utentiInput);
-//
-//                for (Utente utente : utentiList) {
-//                    if (utente.getEmail().equals(mEmail)) {
-//                        // Account exists, return true if the password matches.
-//                        if (utente.getPassword().equals(mPassword)) {
-//                            setUtente(utente);
-//                            found = true;
-//                        }
-//                        return found;
-//                    }
-//                }
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//
-//            // TODO: register the new account here.
-//            return found;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(final Boolean success) {
-//            mAuthTask = null;
-//
-//            if (success) {
-//                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-//                mainIntent.putExtra("utente", userLogin.getUtente());
-//                setResult(RESULT_OK, mainIntent);
-//                finish();
-//            } else {
-//                mPasswordView.setError(getString(R.string.error_incorrect_password));
-//                mPasswordView.requestFocus();
-//            }
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            mAuthTask = null;
-//        }
-//    }
 }
 

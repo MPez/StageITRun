@@ -1,10 +1,10 @@
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,27 +36,25 @@ import java.util.List;
  */
 public class TrophyFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    private static final String ARG_PARAM1 = "utente";
-    private Utente utente;
+    private UserLogin userLogin;
     private List<Trofeo> trofeoList;
     TrophyListAdapter trophyListAdapter;
     private OnTrophyFragmentInteraction mListener;
 
     public TrophyFragment() {
         trofeoList = new ArrayList<>();
+        userLogin = UserLogin.getInstance();
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param utente Utente.
      * @return A new instance of fragment TrophyFragment.
      */
-    public static TrophyFragment newInstance(Utente utente) {
+    public static TrophyFragment newInstance() {
         TrophyFragment fragment = new TrophyFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, utente);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,14 +65,7 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
 
         RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
 
-        if (getArguments() != null) {
-            utente = (Utente) getArguments().getSerializable(ARG_PARAM1);
-        }
-
         trophyListAdapter = new TrophyListAdapter(getActivity(), trofeoList);
-
-
-        //JSONParser parser = new JSONParser();
 
         String trofeoUrl = queue.getURL() + "/trophy";
 
@@ -103,13 +94,6 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                 });
 
         queue.addToRequestQueue(jsonArrayRequest);
-
-//        try {
-//            InputStream trofeoInput = getResources().openRawResource(getResources().getIdentifier("trofei", "raw", getActivity().getPackageName()));
-//            trofeoList = parser.readJSON(trofeoInput);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override

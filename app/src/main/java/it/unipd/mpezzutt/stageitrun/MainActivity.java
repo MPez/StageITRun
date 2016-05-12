@@ -12,9 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +19,10 @@ public class MainActivity extends AppCompatActivity
         implements StageFragment.OnStageFragmentInteraction,
         TrophyFragment.OnTrophyFragmentInteraction {
 
-    private Utente utente;
+    static final int USER_LOGIN = 1;
     private UserLogin userLogin;
 
-    static final int USER_LOGIN = 0;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,31 +33,19 @@ public class MainActivity extends AppCompatActivity
 
         userLogin = UserLogin.getInstance();
 
-        if (userLogin.getUtente() != null) {
-            utente = userLogin.getUtente();
-        } else {
+        if (userLogin.getUtente() == null) {
             Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(loginIntent, USER_LOGIN);
         }
 
         RequestQueueSingleton queue = RequestQueueSingleton.getInstance(this.getApplicationContext());
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == USER_LOGIN) {
-            if (resultCode == RESULT_OK) {
-                utente = (Utente) data.getSerializableExtra("utente");
-                userLogin.setUtente(utente);
-            }
-        }
     }
 
     @Override
@@ -79,9 +64,9 @@ public class MainActivity extends AppCompatActivity
 
     private void setupViewPager (ViewPager viewPager) {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        Fragment stageFragment = StageFragment.newInstance(utente);
+        Fragment stageFragment = StageFragment.newInstance();
         viewPagerAdapter.addFragment(stageFragment, "STAGE");
-        Fragment trofeoFragment = TrophyFragment.newInstance(utente);
+        Fragment trofeoFragment = TrophyFragment.newInstance();
         viewPagerAdapter.addFragment(trofeoFragment, "TROFEI");
         viewPager.setAdapter(viewPagerAdapter);
     }

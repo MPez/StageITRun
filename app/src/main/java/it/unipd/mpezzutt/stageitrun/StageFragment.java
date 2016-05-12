@@ -1,10 +1,8 @@
 package it.unipd.mpezzutt.stageitrun;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,27 +33,25 @@ import java.util.List;
  */
 public class StageFragment extends ListFragment {
 
-    private static final String ARG_PARAM1 = "utente";
-    private Utente utente;
+    private UserLogin userLogin;
     private List<Stage> stageList;
     private StageListAdapter stageListAdapter;
     private OnStageFragmentInteraction mListener;
 
     public StageFragment() {
         stageList = new ArrayList<>();
+        userLogin = UserLogin.getInstance();
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param utente Utente .
      * @return A new instance of fragment StageFragment.
      */
-    public static StageFragment newInstance(Utente utente) {
+    public static StageFragment newInstance() {
         StageFragment fragment = new StageFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, utente);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,17 +62,10 @@ public class StageFragment extends ListFragment {
 
         RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
 
-        if (getArguments() != null) {
-            utente = (Utente) getArguments().getSerializable(ARG_PARAM1);
-        }
-
         stageListAdapter = new StageListAdapter(getActivity(), stageList);
         this.setListAdapter(stageListAdapter);
 
-        //final JSONParser parser = new JSONParser();
-
         String stageUrl = queue.getURL() + "/stage";
-        //String stageListUrl = "/stage/list";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 stageUrl, null,
@@ -90,14 +73,9 @@ public class StageFragment extends ListFragment {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            //stageList = parser.readJSON(response, "stage");
-                            //stageListAdapter.addAll(stageList);
-
                             for (int i = 0; i < response.length(); i++) {
                                 stageListAdapter.add(Stage.toStage(response.getJSONObject(i)));
                             }
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -110,17 +88,7 @@ public class StageFragment extends ListFragment {
                         Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
-
         queue.addToRequestQueue(jsonArrayRequest);
-
-
-
-//        try {
-//            InputStream stageInput = getResources().openRawResource(getResources().getIdentifier("stage", "raw",getActivity().getPackageName()));
-//            stageList = parser.readJSON(stageInput);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -177,18 +145,10 @@ public class StageFragment extends ListFragment {
 
     class StageListAdapter extends ArrayAdapter<Stage> {
         private final Context context;
-        //private List<Stage> stageList;
-
-        public StageListAdapter(Context context) {
-            super(context, -1);
-            this.context = context;
-            //this.stageList = new ArrayList<>();
-        }
 
         public StageListAdapter (Context context, List<Stage> stageList) {
             super(context, -1, stageList);
             this.context = context;
-            //this.stageList = stageList;
             StageFragment.this.stageList = stageList;
         }
 
