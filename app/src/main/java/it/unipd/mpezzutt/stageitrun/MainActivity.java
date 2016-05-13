@@ -11,9 +11,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements StageFragment.OnStageFragmentInteraction,
@@ -21,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     static final int USER_LOGIN = 1;
     private UserLogin userLogin;
+    RequestQueueSingleton queue;
 
     private ViewPager viewPager;
 
@@ -37,8 +52,6 @@ public class MainActivity extends AppCompatActivity
             Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(loginIntent, USER_LOGIN);
         }
-
-        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(this.getApplicationContext());
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
@@ -118,10 +131,72 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_qrcode) {
-            Intent intent = new Intent();
+            IntentIntegrator integrator = new IntentIntegrator(this);
+            integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
+
+        } else if (id == R.id.action_user) {
+
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // QRCODE scan result
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            String contents = result.getContents();
+            if (contents != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(contents);
+                        registraStage(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, "La scansione non ha prodotto alcun risultato oppure è stata annullata", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void registraStage(final JSONObject jsonObject) throws JSONException {
+        queue = RequestQueueSingleton.getInstance(this.getApplicationContext());
+
+        String stageUrl = queue.getURL() + "/user/:" +
+                userLogin.getUtente().getEmail() + "/stage";
+
+        if (jsonObject.getString("tag").equals("start")) {
+            stageUrl += "/inizia";
+        } else {
+            stageUrl += "/termina";
+        }
+
+        final StringRequest request = new StringRequest(Request.Method.POST, stageUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<>();
+                try {
+                    map.put("stage_id", jsonObject.getString("stage_id"));
+                    map.put("tag", jsonObject.getString("tag"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return map;
+            }
+        };
+        queue.addToRequestQueue(request);
+    }
 }
