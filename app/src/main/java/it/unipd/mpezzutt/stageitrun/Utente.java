@@ -11,7 +11,6 @@ import java.util.List;
  * Created by marco on 04/04/16.
  */
 public class Utente implements Serializable {
-    private String id;
     private String nome;
     private String cognome;
     private String email;
@@ -20,7 +19,6 @@ public class Utente implements Serializable {
     private List<String> trofei;
 
     public Utente() {
-        this.id = null;
         this.nome = null;
         this.cognome = null;
         this.email = null;
@@ -29,9 +27,8 @@ public class Utente implements Serializable {
         this.trofei = new ArrayList<String>();
     }
 
-    public Utente (String id, String nome, String cognome, String email,
+    public Utente (String nome, String cognome, String email,
                    List<String> stages_start, List<String> stages_end, List<String> trofei) {
-        this.id = id;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -41,7 +38,6 @@ public class Utente implements Serializable {
     }
 
     public static Utente toUtente(JSONObject object) throws JSONException {
-        String id = object.getString("_id");
         String nome = object.getString("nome");
         String cognome = object.getString("cognome");
         String email = object.getString("email");
@@ -49,12 +45,9 @@ public class Utente implements Serializable {
         List<String> stages_end = JSONParser.toList(object.optJSONArray("stage_id_end"));
         List<String> trofei = JSONParser.toList(object.optJSONArray("trofei_id"));
 
-        return new Utente(id, nome, cognome, email, stages_start, stages_end, trofei);
+        return new Utente(nome, cognome, email, stages_start, stages_end, trofei);
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -62,10 +55,6 @@ public class Utente implements Serializable {
 
     public void setCognome(String cognome) {
         this.cognome = cognome;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getNome() {

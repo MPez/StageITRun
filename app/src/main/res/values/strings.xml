@@ -7,7 +7,8 @@
     <string name="action_trophy">Trofei</string>
     <string name="action_profile">Profilo utente</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="activity_title_login">Sign in</string>
+    <string name="activity_register_title">Registrazione</string>
     <string name="nome_trofeo">Nome trofeo</string>
     <string name="descrizione_trofeo">Descrizione Trofeo</string>
     <string name="nome_azienda">Nome Azienda</string>
@@ -31,20 +32,15 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="error_invalid_email">Indirizzo email non valido</string>
+    <string name="error_invalid_password">La password è troppo corta</string>
+    <string name="error_incorrect_password">La password è sbagliata</string>
+    <string name="error_field_required">Il campo è obbligatorio</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings related to register -->
+    <string name="action_register">Registrati</string>
+    <string name="prompt_nome">Nome</string>
+    <string name="prompt_cognome">Cognome</string>
+    <string name="prompt_password_confirm">Ripeti password</string>
+    <string name="error_required_password">La password di conferma non coincide</string>
 </resources>
