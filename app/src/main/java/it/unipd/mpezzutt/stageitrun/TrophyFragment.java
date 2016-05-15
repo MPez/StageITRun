@@ -23,6 +23,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,11 +76,9 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-
                             for (int i = 0; i < response.length(); i++) {
                                 trophyListAdapter.add(Trofeo.toTrofeo(response.getJSONObject(i)));
                             }
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -94,6 +93,12 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                 });
 
         queue.addToRequestQueue(jsonArrayRequest);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("trofeoList", (Serializable) trofeoList);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

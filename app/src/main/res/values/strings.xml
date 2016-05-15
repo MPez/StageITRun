@@ -13,6 +13,16 @@
     <string name="nome_azienda">Nome Azienda</string>
     <string name="nome_stage">Nome stage</string>
     <string name="descrizione_stage">Descrizione stage</string>
+    <string name="user_profile_title">Profilo utente</string>
+    <string name="user_profile_button_logout">Log out</string>
+    <string name="user_profile_button_login">Log in</string>
+    <string name="user_profile_button_ok">Ok</string>
+    <string name="user_profile_button_cancel">Annulla</string>
+    <string name="user_profile_nome">Nome utente</string>
+    <string name="user_profile_email">Indirizzo email</string>
+    <string name="user_profile_stage">Colloqui svolti</string>
+    <string name="user_profile_trofei">Trofei conquistati</string>
+    <string name="user_profile_tempo">Tempo complessivo in coda</string>
 
     <string name="no_data_stage">Nessuno stage presente</string>
 

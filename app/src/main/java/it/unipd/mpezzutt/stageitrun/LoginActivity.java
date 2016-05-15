@@ -123,6 +123,8 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             if (response.equals("success")) {
                                 retrieveUser(email);
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Password errata, riprovare", Toast.LENGTH_LONG).show();
                             }
                         }
                     },
@@ -148,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
     private void retrieveUser(String email) {
         queue = RequestQueueSingleton.getInstance(getApplicationContext());
 
-        String userUrl = queue.getURL() + "/user/:" + email;
+        String userUrl = queue.getURL() + "/user/" + email;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
                 userUrl, null,

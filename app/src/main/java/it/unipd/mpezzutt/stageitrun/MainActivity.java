@@ -1,5 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -34,10 +35,9 @@ public class MainActivity extends AppCompatActivity
         TrophyFragment.OnTrophyFragmentInteraction {
 
     static final int USER_LOGIN = 1;
+    static final int USER_PROFILE = 2;
     private UserLogin userLogin;
     RequestQueueSingleton queue;
-
-    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(loginIntent, USER_LOGIN);
         }
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
@@ -135,7 +135,13 @@ public class MainActivity extends AppCompatActivity
             integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
 
         } else if (id == R.id.action_user) {
-
+            if (userLogin.getUtente() != null) {
+                Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
+                startActivityForResult(intent, USER_PROFILE);
+            } else {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivityForResult(intent, USER_LOGIN);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -158,12 +164,23 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "La scansione non ha prodotto alcun risultato oppure è stata annullata", Toast.LENGTH_LONG).show();
             }
         }
+
+        if (requestCode == USER_PROFILE) {
+            if (resultCode == RESULT_CANCELED) {
+                userLogin.setUtente(null);
+                Toast.makeText(getApplicationContext(), "Logout effettuato", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == USER_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Login effettuato", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void registraStage(final JSONObject jsonObject) throws JSONException {
         queue = RequestQueueSingleton.getInstance(this.getApplicationContext());
 
-        String stageUrl = queue.getURL() + "/user/:" +
+        String stageUrl = queue.getURL() + "/user/" +
                 userLogin.getUtente().getEmail() + "/stage";
 
         if (jsonObject.getString("tag").equals("start")) {

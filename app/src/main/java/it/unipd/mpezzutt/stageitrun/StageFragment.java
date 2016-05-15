@@ -19,6 +19,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -89,6 +90,7 @@ public class StageFragment extends ListFragment {
                     }
                 });
         queue.addToRequestQueue(jsonArrayRequest);
+
     }
 
     @Override

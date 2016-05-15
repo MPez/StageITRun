@@ -1,5 +1,7 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

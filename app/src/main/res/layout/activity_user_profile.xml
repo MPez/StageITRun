@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="it.unipd.mpezzutt.stageitrun.UserProfileActivity">
+
+    <LinearLayout
+        android:id="@+id/dialog_layout_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/dialog_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_nome"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+            android:id="@+id/dialog_user_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_email"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_layout_stage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_layout_name"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/dialog_user_stage"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_stage"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/dialog_stage_number"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="#"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_layout_trofei"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/dialog_layout_stage"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/dialog_user_trofei"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_trofei"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/dialog_trofei_number"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="#"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dialog_divider"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/dividerHorizontal"
+        android:layout_below="@+id/dialog_layout_trofei"/>
+
+    <LinearLayout
+        android:id="@+id/dialog_layout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/dialog_divider"
+        style="?android:attr/buttonBarStyle">
+
+        <Button
+            android:id="@+id/dialog_button_logout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_button_logout"
+            android:onClick="negativeButton"
+            android:textColor="@color/colorPrimary"
+            style="?android:attr/buttonBarStyle"/>
+
+        <Button
+            android:id="@+id/dialog_button_ok"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/user_profile_button_ok"
+            android:onClick="positiveButton"
+            android:textColor="@color/colorPrimary"
+            style="?android:attr/buttonBarStyle"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

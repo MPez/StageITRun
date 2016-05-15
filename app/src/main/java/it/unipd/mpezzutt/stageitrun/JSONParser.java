@@ -45,7 +45,7 @@ public class JSONParser {
 
         if (jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
-                if (jsonArray.getJSONObject(i) != null) {
+                if (jsonArray.optJSONObject(i) != null) {
                     list.add(jsonArray.getJSONObject(i).getString("stage_id"));
                 } else {
                     list.add(jsonArray.getString(i));
