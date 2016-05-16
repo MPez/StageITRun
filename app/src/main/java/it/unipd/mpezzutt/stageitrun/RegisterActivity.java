@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private UserLogin userLogin;
     private RequestQueueSingleton queue;
 
     private EditText nomeView;
@@ -40,25 +40,28 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        userLogin = UserLogin.getInstance();
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email");
+        String password = intent.getStringExtra("password");
 
         nomeView = (EditText) findViewById(R.id.nome_register);
         cognomeView = (EditText) findViewById(R.id.cognome_register);
         emailView = (EditText) findViewById(R.id.email_register);
+        emailView.setText(email);
         passwordView = (EditText) findViewById(R.id.password_register);
+        passwordView.setText(password);
         passwordConfirmView = (EditText) findViewById(R.id.password_register_confirm);
 
         passwordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == R.id.register_confirm || actionId == EditorInfo.IME_NULL) {
+                if (actionId == R.id.register || actionId == EditorInfo.IME_NULL) {
                     attemptRegister();
                     return true;
                 }
                 return false;
             }
         });
-
 
         Button registerButton = (Button) findViewById(R.id.email_register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -95,10 +98,10 @@ public class RegisterActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if (!TextUtils.isEmpty(password_confirm) && !isPasswordValid(password)) {
-            passwordConfirmView.setError(getString(R.string.error_invalid_password));
-        } else if (!password.equals(password_confirm)) {
+        if (TextUtils.isEmpty(password_confirm) || !password_confirm.equals(password)) {
             passwordConfirmView.setError(getString(R.string.error_required_password));
+            focusView = passwordConfirmView;
+            cancel = true;
         }
 
         // Check for a valid email address.
@@ -112,6 +115,19 @@ public class RegisterActivity extends AppCompatActivity {
             cancel = true;
         }
 
+        // Check for valid nome e cognome
+        if (TextUtils.isEmpty(nome)) {
+            nomeView.setError(getString(R.string.error_field_required));
+            focusView = nomeView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(cognome)) {
+            cognomeView.setError(getString(R.string.error_field_required));
+            focusView = cognomeView;
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -121,26 +137,25 @@ public class RegisterActivity extends AppCompatActivity {
             queue = RequestQueueSingleton.getInstance(getApplicationContext());
             String userUrl = queue.getURL() + "/user/registra";
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
-                    userUrl, null,
-                    new Response.Listener<JSONObject>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, userUrl,
+                    new Response.Listener<String>() {
                         @Override
-                        public void onResponse(JSONObject response) {
-                            if (response != null) {
-                                try {
-                                    userLogin.setUtente(Utente.toUtente(response));
-                                    setResult(RESULT_OK);
-                                    finish();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                        public void onResponse(String response) {
+                            if (response.equals("success")) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Registrazione effettuata", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent();
+                                intent.putExtra("email", email);
+                                setResult(RESULT_OK, intent);
+                                finish();
                             }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivity.this, error.toString(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     }) {
                 @Override
@@ -154,7 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             };
 
-            queue.addToRequestQueue(jsonObjectRequest);
+            queue.addToRequestQueue(stringRequest);
         }
     }
 

@@ -1,5 +1,6 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -32,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private UserLogin userLogin;
     private RequestQueueSingleton queue;
+    static final int USER_REGISTER = 3;
 
 
     // UI references.
@@ -119,17 +121,26 @@ public class LoginActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            if (response.equals("success")) {
-                                retrieveUser(email);
-                            } else {
-                                Toast.makeText(LoginActivity.this, "Password errata, riprovare", Toast.LENGTH_LONG).show();
+                            switch (response) {
+                                case "success" :
+                                    retrieveUser(email);
+                                    break;
+                                case "not found" :
+                                    registerUser(email, password);
+                                    break;
+                                case "failure" :
+                                    Toast.makeText(LoginActivity.this,
+                                            "Password errata, riprovare",
+                                            Toast.LENGTH_LONG).show();
+                                    break;
                             }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this,
+                                    error.toString(), Toast.LENGTH_LONG).show();
                         }
                     }) {
                 @Override
@@ -145,6 +156,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void registerUser(String email, String password) {
+        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+        intent.putExtra("email", email);
+        intent.putExtra("password", password);
+        startActivityForResult(intent, USER_REGISTER);
+    }
+
     private void retrieveUser(String email) {
         queue = RequestQueueSingleton.getInstance(getApplicationContext());
 
@@ -157,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             userLogin.setUtente(Utente.toUtente(response));
+                            setResult(RESULT_OK);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -166,7 +185,8 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, error.toString(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
         queue.addToRequestQueue(jsonObjectRequest);
@@ -182,5 +202,13 @@ public class LoginActivity extends AppCompatActivity {
         return password.length() > 4;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == USER_REGISTER) {
+            if (resultCode == RESULT_OK) {
+                retrieveUser(data.getStringExtra("email"));
+            }
+        }
+    }
 }
 
