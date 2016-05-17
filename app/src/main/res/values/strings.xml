@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Stage IT Run</string>
     <string name="unipd">Università degli Studi di Padova</string>
+
+
     <string name="action_stage_spec">Dettagli stage</string>
     <string name="action_trophy_spec">Dettagli trofeo</string>
     <string name="activity_stage">Stage</string>
@@ -14,6 +16,9 @@
     <string name="nome_azienda">Nome Azienda</string>
     <string name="nome_stage">Nome stage</string>
     <string name="descrizione_stage">Descrizione stage</string>
+    <string name="coda">Coda</string>
+    <string name="tempo_coda">00:00</string>
+
     <string name="user_profile_title">Profilo utente</string>
     <string name="user_profile_button_logout">Log out</string>
     <string name="user_profile_button_login">Log in</string>

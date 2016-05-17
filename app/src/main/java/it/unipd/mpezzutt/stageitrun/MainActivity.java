@@ -11,6 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -31,12 +35,14 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements StageFragment.OnStageFragmentInteraction,
-        TrophyFragment.OnTrophyFragmentInteraction {
+        TrophyFragment.OnTrophyFragmentInteraction, AdapterView.OnItemSelectedListener {
 
     static final int USER_LOGIN = 1;
     static final int USER_PROFILE = 2;
+
     private UserLogin userLogin;
-    RequestQueueSingleton queue;
+    private RequestQueueSingleton queue;
+    private ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +61,38 @@ public class MainActivity extends AppCompatActivity
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_stage, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int pos = tab.getPosition();
+                if (pos == 1) {
+                    spinner.setVisibility(View.GONE);
+                } else {
+                    spinner.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String order = parent.getItemAtPosition(position).toString();
+
+        StageFragment stageFragment = (StageFragment) viewPagerAdapter.getItem(0);
+        stageFragment.updateStageList(order);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
@@ -75,7 +111,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupViewPager (ViewPager viewPager) {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         Fragment stageFragment = StageFragment.newInstance();
         viewPagerAdapter.addFragment(stageFragment, "STAGE");
         Fragment trofeoFragment = TrophyFragment.newInstance();
@@ -127,9 +163,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_qrcode) {
+        if (id == R.id.action_qrcode) {
             IntentIntegrator integrator = new IntentIntegrator(this);
             integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
 
@@ -192,13 +226,27 @@ public class MainActivity extends AppCompatActivity
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        switch (response) {
+                            case "stage iniziato":
+                                Toast.makeText(getApplicationContext(), "Stage iniziato",
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                            case "stage presente":
+                                Toast.makeText(getApplicationContext(), "Stage già effettuato",
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                            case "stage terminato":
+                                Toast.makeText(getApplicationContext(), "Stage terminato",
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Toast.makeText(getApplicationContext(), error.toString(),
+                                Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override

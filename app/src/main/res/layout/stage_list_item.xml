@@ -2,31 +2,69 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin">
 
-
-    <TextView
-        android:id="@+id/stage"
-        android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:text="@string/nome_stage"
-        android:textSize="12sp"/>
-
-    <TextView
-        android:id="@+id/azienda"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/stageLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/stage"
+        android:orientation="vertical"
+        android:paddingRight="8dp"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/azienda"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:text="@string/nome_azienda"
+            android:textSize="16sp"
+            android:textColor="@color/textPrimaryColor"/>
+
+        <TextView
+            android:id="@+id/stage"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/nome_stage"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/codaLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:layout_toLeftOf="@+id/stageTick"
+        android:layout_toStartOf="@+id/stageTick">
+
+        <TextView
+            android:id="@+id/coda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/coda"/>
+
+        <TextView
+            android:id="@+id/tempoCoda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tempo_coda"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/stageTick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_clear_red_24dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:gravity="center_vertical"
-        android:text="@string/nome_azienda"
-        android:textSize="16sp"
-        android:textColor="@color/textPrimaryColor" />
+        android:paddingLeft="8dp"/>
+
 
 </RelativeLayout>

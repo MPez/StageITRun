@@ -1,12 +1,16 @@
 package it.unipd.mpezzutt.stageitrun;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +19,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +41,7 @@ import java.util.List;
 public class StageFragment extends ListFragment {
 
     private UserLogin userLogin;
+    RequestQueueSingleton queue;
     private List<Stage> stageList;
     private StageListAdapter stageListAdapter;
     private OnStageFragmentInteraction mListener;
@@ -61,7 +68,7 @@ public class StageFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+        queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
 
         stageListAdapter = new StageListAdapter(getActivity(), stageList);
         this.setListAdapter(stageListAdapter);
@@ -91,6 +98,35 @@ public class StageFragment extends ListFragment {
                 });
         queue.addToRequestQueue(jsonArrayRequest);
 
+    }
+
+    public void updateStageList(String order) {
+        queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+        String url = queue.getURL() + "/stage/" + order;
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            stageListAdapter.clear();
+                            for (int i = 0; i < response.length(); i++) {
+                                stageListAdapter.add(Stage.toStage(response.getJSONObject(i)));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        stageListAdapter.notifyDataSetChanged();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.addToRequestQueue(jsonArrayRequest);
     }
 
     @Override
@@ -152,6 +188,10 @@ public class StageFragment extends ListFragment {
             super(context, -1, stageList);
             this.context = context;
             StageFragment.this.stageList = stageList;
+        }
+
+        public void clear() {
+            stageList.clear();
         }
 
         @Override
