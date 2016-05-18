@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -21,6 +23,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -35,7 +38,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements StageFragment.OnStageFragmentInteraction,
-        TrophyFragment.OnTrophyFragmentInteraction, AdapterView.OnItemSelectedListener {
+        TrophyFragment.OnTrophyFragmentInteraction {
 
     static final int USER_LOGIN = 1;
     static final int USER_PROFILE = 2;
@@ -58,20 +61,34 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(loginIntent, USER_LOGIN);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_stage, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String order = parent.getItemAtPosition(position).toString();
+                StageFragment stageFragment = (StageFragment) viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+                stageFragment.updateStageList(order);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+
                 int pos = tab.getPosition();
                 if (pos == 1) {
                     spinner.setVisibility(View.GONE);
@@ -80,19 +97,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String order = parent.getItemAtPosition(position).toString();
-
-        StageFragment stageFragment = (StageFragment) viewPagerAdapter.getItem(0);
-        stageFragment.updateStageList(order);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
@@ -123,6 +127,8 @@ public class MainActivity extends AppCompatActivity
         private List<Fragment> fragmentList = new ArrayList<>();
         private List<String> fragmentTitle = new ArrayList<>();
 
+        private SparseArray<Fragment> registeredFragment = new SparseArray<>();
+
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -130,6 +136,23 @@ public class MainActivity extends AppCompatActivity
         public void addFragment (Fragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitle.add(title);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragment.get(position);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragment.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragment.remove(position);
+            super.destroyItem(container, position, object);
         }
 
         @Override
@@ -205,9 +228,37 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (requestCode == USER_LOGIN) {
             if (resultCode == RESULT_OK) {
+                updateUser(data.getStringExtra("email"));
                 Toast.makeText(getApplicationContext(), "Login effettuato", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void updateUser(String email) {
+        queue = RequestQueueSingleton.getInstance(getApplicationContext());
+
+        String userUrl = queue.getURL() + "/user/" + email;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                userUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            userLogin.setUtente(Utente.toUtente(response));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, error.toString(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.addToRequestQueue(jsonObjectRequest);
     }
 
     private void registraStage(final JSONObject jsonObject) throws JSONException {
@@ -236,6 +287,7 @@ public class MainActivity extends AppCompatActivity
                                         Toast.LENGTH_SHORT).show();
                                 break;
                             case "stage terminato":
+                                updateUser(userLogin.getUtente().getEmail());
                                 Toast.makeText(getApplicationContext(), "Stage terminato",
                                         Toast.LENGTH_SHORT).show();
                                 break;

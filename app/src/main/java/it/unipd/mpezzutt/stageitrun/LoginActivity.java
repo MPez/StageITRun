@@ -123,7 +123,10 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             switch (response) {
                                 case "success" :
-                                    retrieveUser(email);
+                                    Intent intent = new Intent();
+                                    intent.putExtra("email", email);
+                                    setResult(RESULT_OK, intent);
+                                    finish();
                                     break;
                                 case "not found" :
                                     registerUser(email, password);
@@ -163,35 +166,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(intent, USER_REGISTER);
     }
 
-    private void retrieveUser(String email) {
-        queue = RequestQueueSingleton.getInstance(getApplicationContext());
-
-        String userUrl = queue.getURL() + "/user/" + email;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
-                userUrl, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            userLogin.setUtente(Utente.toUtente(response));
-                            setResult(RESULT_OK);
-                            finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginActivity.this, error.toString(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-        queue.addToRequestQueue(jsonObjectRequest);
-    }
-
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
@@ -206,7 +180,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == USER_REGISTER) {
             if (resultCode == RESULT_OK) {
-                retrieveUser(data.getStringExtra("email"));
+                Intent intent = new Intent();
+                intent.putExtra("email", data.getStringExtra("email"));
+                setResult(RESULT_OK, intent);
+                finish();
             }
         }
     }

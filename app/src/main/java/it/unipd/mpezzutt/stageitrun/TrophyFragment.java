@@ -88,7 +88,8 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Trophy "+ error.toString(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 

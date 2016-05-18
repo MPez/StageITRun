@@ -68,36 +68,8 @@ public class StageFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
-
         stageListAdapter = new StageListAdapter(getActivity(), stageList);
         this.setListAdapter(stageListAdapter);
-
-        String stageUrl = queue.getURL() + "/stage";
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
-                stageUrl, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                stageListAdapter.add(Stage.toStage(response.getJSONObject(i)));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        stageListAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        queue.addToRequestQueue(jsonArrayRequest);
-
     }
 
     public void updateStageList(String order) {
