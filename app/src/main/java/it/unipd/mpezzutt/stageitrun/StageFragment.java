@@ -1,16 +1,13 @@
 package it.unipd.mpezzutt.stageitrun;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.text.Layout;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,13 +16,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -74,7 +68,8 @@ public class StageFragment extends ListFragment {
 
     public void updateStageList(String order) {
         queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
-        String url = queue.getURL() + "/stage/" + order;
+        String url = queue.getURL() + "/stage/"
+                + userLogin.getUtente().getEmail() + "/" + order;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 url, null,
@@ -177,6 +172,10 @@ public class StageFragment extends ListFragment {
                 aziendaView.setText(stage.getAzienda());
                 TextView stageView = (TextView) itemView.findViewById(R.id.stage);
                 stageView.setText(stage.getNome());
+                ImageView image = (ImageView) itemView.findViewById(R.id.stageTick);
+                if (userLogin.getUtente().getStages_end().containsKey(stage.getId())) {
+                    image.setImageResource(R.drawable.ic_done_green_24dp);
+                }
             }
 
             return itemView;

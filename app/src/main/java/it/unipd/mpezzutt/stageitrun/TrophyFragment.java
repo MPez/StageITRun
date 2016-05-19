@@ -2,9 +2,7 @@ package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,7 +108,7 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         GridView gridView = (GridView) getActivity().findViewById(R.id.trophy_GridView);
@@ -173,11 +171,8 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
             
             Trofeo trofeo = trofeoList.get(position);
             ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophyImage);
-            //if (utente.getTrofei().contains(trofeo)) {
-            if (false) {
+            if (userLogin.getUtente().getTrofei().contains(trofeo.getId())) {
                 trofeoView.setImageResource(R.drawable.trophy_checkmark);
-            } else {
-                trofeoView.setImageResource(R.drawable.trophy_close);
             }
             TextView nomeView = (TextView) itemView.findViewById(R.id.trophyName);
             nomeView.setText(trofeo.getNome());

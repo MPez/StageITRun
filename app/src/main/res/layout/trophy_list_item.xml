@@ -9,7 +9,7 @@
         android:id="@+id/trophyImage"
         android:layout_width="match_parent"
         android:layout_height="96dp"
-        android:src="@drawable/trophy"/>
+        android:src="@drawable/trophy_close"/>
 
     <TextView
         android:id="@+id/trophyName"

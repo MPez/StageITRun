@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Created by marco on 04/04/16.
@@ -37,6 +38,8 @@ public class Stage implements Serializable {
 
         return new Stage(id, nome, azienda, descrizione);
     }
+
+
 
     public void setId(String id) {
         this.id = id;
