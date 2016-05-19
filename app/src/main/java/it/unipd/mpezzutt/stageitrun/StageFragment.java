@@ -173,8 +173,12 @@ public class StageFragment extends ListFragment {
                 TextView stageView = (TextView) itemView.findViewById(R.id.stage);
                 stageView.setText(stage.getNome());
                 ImageView image = (ImageView) itemView.findViewById(R.id.stageTick);
-                if (userLogin.getUtente().getStages_end().containsKey(stage.getId())) {
-                    image.setImageResource(R.drawable.ic_done_green_24dp);
+                if (userLogin.getUtente() != null) {
+                    if (userLogin.getUtente().getStages_end().containsKey(stage.getId())) {
+                        image.setImageResource(R.drawable.ic_done_green_24dp);
+                    }
+                } else {
+                    image.setImageResource(R.drawable.ic_clear_red_24dp);
                 }
             }
 

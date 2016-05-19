@@ -24,14 +24,17 @@ public class StageSpecActivity extends AppCompatActivity {
         TextView body = (TextView) findViewById(R.id.stageDescriptionSpec);
         body.setText(item.getDescrizione());
         TextView start = (TextView) findViewById(R.id.startTime);
-        String time = utente.getStages_start().get(item.getId());
-        if (time != null) {
-            start.setText(time);
-        }
-        TextView end = (TextView) findViewById(R.id.endTime);
-        time = utente.getStages_end().get(item.getId());
-        if (time != null) {
-            end.setText(time);
+
+        if (utente != null) {
+            String time = utente.getStages_start().get(item.getId());
+            if (time != null) {
+                start.setText(time);
+            }
+            TextView end = (TextView) findViewById(R.id.endTime);
+            time = utente.getStages_end().get(item.getId());
+            if (time != null) {
+                end.setText(time);
+            }
         }
     }
 }

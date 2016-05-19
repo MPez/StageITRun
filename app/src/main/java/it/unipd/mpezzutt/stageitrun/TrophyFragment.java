@@ -171,8 +171,10 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
             
             Trofeo trofeo = trofeoList.get(position);
             ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophyImage);
-            if (userLogin.getUtente().getTrofei().contains(trofeo.getId())) {
-                trofeoView.setImageResource(R.drawable.trophy_checkmark);
+            if (userLogin.getUtente() != null) {
+                if (userLogin.getUtente().getTrofei().contains(trofeo.getId())) {
+                    trofeoView.setImageResource(R.drawable.trophy_checkmark);
+                }
             }
             TextView nomeView = (TextView) itemView.findViewById(R.id.trophyName);
             nomeView.setText(trofeo.getNome());

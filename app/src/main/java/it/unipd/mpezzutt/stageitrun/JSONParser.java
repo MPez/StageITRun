@@ -1,26 +1,19 @@
 package it.unipd.mpezzutt.stageitrun;
 
-import android.util.ArrayMap;
-import android.util.JsonReader;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by marco on 04/04/16.
@@ -64,8 +57,9 @@ public class JSONParser {
 
     public static Map<String, String> toMap(JSONArray jsonArray) throws JSONException {
         Map<String, String> map = new HashMap<>();
-        DateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ITALY);
-        DateFormat writeFormat = new SimpleDateFormat("HH:mm:ss", Locale.ITALY);
+        DateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        DateFormat writeFormat = new SimpleDateFormat("HH:mm:ss");
+        writeFormat.setTimeZone(TimeZone.getTimeZone("GMT+02"));
 
         if (jsonArray.length() > 0) {
             for (int i = 0; i <jsonArray.length() ; i++) {

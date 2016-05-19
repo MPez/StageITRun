@@ -187,8 +187,14 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_qrcode) {
-            IntentIntegrator integrator = new IntentIntegrator(this);
-            integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
+            if (userLogin.getUtente() == null) {
+                Toast.makeText(getApplicationContext(),
+                        "Necessario effettuare il login per registrare uno stage.",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                IntentIntegrator integrator = new IntentIntegrator(this);
+                integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
+            }
 
         } else if (id == R.id.action_user) {
             if (userLogin.getUtente() != null) {
@@ -279,6 +285,7 @@ public class MainActivity extends AppCompatActivity
                     public void onResponse(String response) {
                         switch (response) {
                             case "stage iniziato":
+                                updateUser(userLogin.getUtente().getEmail());
                                 Toast.makeText(getApplicationContext(), "Stage iniziato",
                                         Toast.LENGTH_SHORT).show();
                                 break;
