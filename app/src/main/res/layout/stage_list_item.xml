@@ -50,10 +50,10 @@
             android:text="@string/coda"/>
 
         <TextView
-            android:id="@+id/tempoCoda"
+            android:id="@+id/numeroCoda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tempo_coda"/>
+            android:text="@string/numero_coda"/>
 
     </LinearLayout>
 

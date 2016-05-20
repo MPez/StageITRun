@@ -15,19 +15,22 @@ public class Stage implements Serializable {
     private String nome;
     private String azienda;
     private String descrizione;
+    private int coda;
 
     public Stage() {
         this.id = null;
         this.nome = null;
         this.azienda = null;
         this.descrizione = null;
+        this.coda = 0;
     }
 
-    public Stage (String id, String nome, String azienda, String descrizione) {
+    public Stage (String id, String nome, String azienda, String descrizione, int coda) {
         this.id = id;
         this.nome = nome;
         this.azienda = azienda;
         this.descrizione = descrizione;
+        this.coda = coda;
     }
 
     public static Stage toStage(JSONObject object) throws JSONException {
@@ -35,26 +38,9 @@ public class Stage implements Serializable {
         String nome = object.getString("nome");
         String azienda = object.getString("azienda");
         String descrizione = object.getString("descrizione");
+        int coda = object.getInt("coda");
 
-        return new Stage(id, nome, azienda, descrizione);
-    }
-
-
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setAzienda(String azienda) {
-        this.azienda = azienda;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
+        return new Stage(id, nome, azienda, descrizione, coda);
     }
 
     public String getId() {
@@ -73,5 +59,7 @@ public class Stage implements Serializable {
         return descrizione;
     }
 
-
+    public int getCoda() {
+        return coda;
+    }
 }

@@ -46,7 +46,7 @@
             android:layout_row="0"/>
 
         <TextView
-            android:id="@+id/tempoCoda"
+            android:id="@+id/numeroCoda"
             android:text="@string/tempo_coda"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"

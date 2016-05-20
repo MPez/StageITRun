@@ -172,6 +172,9 @@ public class StageFragment extends ListFragment {
                 aziendaView.setText(stage.getAzienda());
                 TextView stageView = (TextView) itemView.findViewById(R.id.stage);
                 stageView.setText(stage.getNome());
+                TextView codaView = (TextView) itemView.findViewById(R.id.numeroCoda);
+                codaView.setText(Integer.toString(stage.getCoda()));
+
                 ImageView image = (ImageView) itemView.findViewById(R.id.stageTick);
                 if (userLogin.getUtente() != null) {
                     if (userLogin.getUtente().getStages_end().containsKey(stage.getId())) {
