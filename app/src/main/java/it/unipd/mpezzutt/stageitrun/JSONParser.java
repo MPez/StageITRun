@@ -59,7 +59,7 @@ public class JSONParser {
         Map<String, String> map = new HashMap<>();
         DateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         DateFormat writeFormat = new SimpleDateFormat("HH:mm:ss");
-        writeFormat.setTimeZone(TimeZone.getTimeZone("GMT+02"));
+        writeFormat.setTimeZone(TimeZone.getTimeZone("GMT+04"));
 
         if (jsonArray.length() > 0) {
             for (int i = 0; i <jsonArray.length() ; i++) {

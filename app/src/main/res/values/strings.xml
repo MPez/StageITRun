@@ -2,13 +2,13 @@
     <string name="app_name">Stage IT Run</string>
     <string name="unipd">Università degli Studi di Padova</string>
 
-
     <string name="action_stage_spec">Dettagli stage</string>
     <string name="action_trophy_spec">Dettagli trofeo</string>
     <string name="activity_stage">Stage</string>
     <string name="action_trophy">Trofei</string>
     <string name="action_profile">Profilo utente</string>
     <string name="action_settings">Settings</string>
+
     <string name="activity_title_login">Sign in</string>
     <string name="activity_register_title">Registrazione</string>
     <string name="nome_trofeo">Nome trofeo</string>
@@ -21,6 +21,9 @@
     <string name="numero_coda">000</string>
     <string name="tempo_inizio">Inizio coda</string>
     <string name="tempo_fine">Fine coda</string>
+    <string name="nome_utente">Nome Cognome</string>
+    <string name="posizione">0</string>
+    <string name="numero_stage">0</string>
 
     <string name="user_profile_title">Profilo utente</string>
     <string name="user_profile_button_logout">Log out</string>
@@ -34,6 +37,7 @@
     <string name="user_profile_tempo">Tempo complessivo in coda</string>
 
     <string name="no_data_stage">Nessuno stage presente</string>
+    <string name="no_user_rank">Nessun utente in classifica</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

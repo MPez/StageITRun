@@ -38,7 +38,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements StageFragment.OnStageFragmentInteraction,
-        TrophyFragment.OnTrophyFragmentInteraction {
+        TrophyFragment.OnTrophyFragmentInteraction,
+        UserRankFragment.OnUserRankFragmentInteraction {
 
     static final int USER_LOGIN = 1;
     static final int USER_PROFILE = 2;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private UserLogin userLogin;
     private RequestQueueSingleton queue;
     private ViewPagerAdapter viewPagerAdapter;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
-        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_stage, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity
                 super.onTabSelected(tab);
 
                 int pos = tab.getPosition();
-                if (pos == 1) {
+                if (pos != 0) {
                     spinner.setVisibility(View.GONE);
                 } else {
                     spinner.setVisibility(View.VISIBLE);
@@ -114,12 +116,19 @@ public class MainActivity extends AppCompatActivity
         startActivity(trophySpecIntent);
     }
 
+    @Override
+    public void onUserItemSelected(Utente item) {
+
+    }
+
     private void setupViewPager (ViewPager viewPager) {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         Fragment stageFragment = StageFragment.newInstance();
         viewPagerAdapter.addFragment(stageFragment, "STAGE");
         Fragment trofeoFragment = TrophyFragment.newInstance();
         viewPagerAdapter.addFragment(trofeoFragment, "TROFEI");
+        Fragment userFragment = UserRankFragment.newInstance();
+        viewPagerAdapter.addFragment(userFragment, "CLASSIFICA");
         viewPager.setAdapter(viewPagerAdapter);
     }
 

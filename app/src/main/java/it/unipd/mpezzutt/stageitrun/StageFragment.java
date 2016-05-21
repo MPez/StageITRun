@@ -35,7 +35,7 @@ import java.util.List;
 public class StageFragment extends ListFragment {
 
     private UserLogin userLogin;
-    RequestQueueSingleton queue;
+    private RequestQueueSingleton queue;
     private List<Stage> stageList;
     private StageListAdapter stageListAdapter;
     private OnStageFragmentInteraction mListener;
@@ -53,8 +53,8 @@ public class StageFragment extends ListFragment {
      */
     public static StageFragment newInstance() {
         StageFragment fragment = new StageFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -101,13 +101,6 @@ public class StageFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stage_list, container, false);
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
     }
 
     @Override
@@ -158,7 +151,7 @@ public class StageFragment extends ListFragment {
         }
 
         public void clear() {
-            stageList.clear();
+            StageFragment.this.stageList.clear();
         }
 
         @Override
@@ -190,25 +183,7 @@ public class StageFragment extends ListFragment {
 
         @Override
         public int getCount() {
-            if (stageList != null) {
-                return stageList.size();
-            }
-            else {
-                return 0;
-            }
-        }
-
-        @Override
-        public void addAll(Collection<? extends Stage> collection) {
-            stageList.addAll(collection);
-        }
-
-        @Override
-        public void addAll(Stage... items) {
-            stageList.clear();
-            for (Stage item : items) {
-                stageList.add(item);
-            }
+            return stageList.size();
         }
 
         @Override
