@@ -40,10 +40,10 @@ public class Utente implements Serializable {
         this.trofei = trofei;
     }
 
-    public Utente (String nome, String cognome, Map<String, String> stages_end) {
+    public Utente (String nome, String cognome, String email, Map<String, String> stages_end) {
         this.nome = nome;
         this.cognome = cognome;
-        this.email = null;
+        this.email = email;
         this.stages_start = new HashMap<>();
         this.stages_end = stages_end;
         this.trofei = new ArrayList<>();
@@ -63,9 +63,10 @@ public class Utente implements Serializable {
     public static Utente toLightUtente(JSONObject object) throws JSONException {
         String nome = object.getString("nome");
         String cognome = object.getString("cognome");
+        String email = object.getString("email");
         Map<String, String> stages_end = JSONParser.toMap(object.optJSONArray("stage_id_end"));
 
-        return new Utente(nome, cognome, stages_end);
+        return new Utente(nome, cognome, email, stages_end);
     }
 
 

@@ -13,7 +13,7 @@ public class RequestQueueSingleton {
     private static RequestQueueSingleton mInstance;
     private RequestQueue mRequestQueue;
 
-    private final String URL = "http://192.168.1.56:3000";
+    private final String URL = "http://192.168.1.2:3000";
 
     private static Context mCtx;
 

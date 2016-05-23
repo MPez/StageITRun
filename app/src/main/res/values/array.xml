@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sort_stage">
-        <item>A..Z</item>
-        <item>Z..A</item>
-        <item>00..24</item>
-        <item>24..00</item>
+        <item>Abc \u2191</item>
+        <item>Abc \u2193</item>
+        <item>Coda \u2191</item>
+        <item>Coda \u2193</item>
         <item>Done</item>
         <item>To-do</item>
     </string-array>

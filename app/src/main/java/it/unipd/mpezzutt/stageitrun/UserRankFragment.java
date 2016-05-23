@@ -3,10 +3,12 @@ package it.unipd.mpezzutt.stageitrun;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -155,6 +157,13 @@ public class UserRankFragment extends ListFragment {
                 String nome = utente.getNome() + " " + utente.getCognome();
                 TextView nomeCognome = (TextView) itemView.findViewById(R.id.userName);
                 nomeCognome.setText(nome);
+                if (userLogin.getUtente() != null) {
+                    if (utente.getEmail().equals(userLogin.getUtente().getEmail())) {
+                        //nomeCognome.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                        stageNum.setTextColor(getResources().getColor(R.color.colorAccent));
+                        nomeCognome.setTextColor(getResources().getColor(R.color.colorAccent));
+                    }
+                }
             }
 
             return itemView;

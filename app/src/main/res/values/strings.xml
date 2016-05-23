@@ -38,6 +38,8 @@
 
     <string name="no_data_stage">Nessuno stage presente</string>
     <string name="no_user_rank">Nessun utente in classifica</string>
+    <string name="trofeo_popup_bravo">Complimenti!!</string>
+    <string name="trofeo_popup">Hai conquistato il trofeo</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

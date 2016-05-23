@@ -62,6 +62,10 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        updateTrophyList();
+    }
+
+    public void updateTrophyList() {
         RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
 
         trophyListAdapter = new TrophyListAdapter(getActivity(), trofeoList);
@@ -137,6 +141,15 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public String getNomeTrofeo(String id) {
+        for (Trofeo trofeo : trofeoList) {
+            if (trofeo.getId().equals(id)) {
+                return trofeo.getNome();
+            }
+        }
+        return null;
     }
 
     /**

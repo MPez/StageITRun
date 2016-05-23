@@ -7,14 +7,12 @@ import android.widget.TextView;
 
 public class UserProfileActivity extends Activity {
 
-    UserLogin userLogin;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        userLogin = UserLogin.getInstance();
+        UserLogin userLogin = UserLogin.getInstance();
         Utente utente = userLogin.getUtente();
 
         TextView nome = (TextView) findViewById(R.id.dialog_user_name);

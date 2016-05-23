@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +48,11 @@ public class MainActivity extends AppCompatActivity
 
     private UserLogin userLogin;
     private RequestQueueSingleton queue;
+    private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
     private Spinner spinner;
+
+    private int currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(loginIntent, USER_LOGIN);
         }
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
         spinner = (Spinner) findViewById(R.id.spinner);
@@ -75,6 +80,23 @@ public class MainActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String order = parent.getItemAtPosition(position).toString();
                 StageFragment stageFragment = (StageFragment) viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+
+                switch (order) {
+                    case "Abc \u2191":
+                        order = "abc/asc";
+                        break;
+                    case "Abc \u2193":
+                        order = "abc/desc";
+                        break;
+                    case "Coda \u2191":
+                        order = "coda/asc";
+                        break;
+                    case "Coda \u2193":
+                        order = "coda/desc";
+                        break;
+                    default:
+                        break;
+                }
                 stageFragment.updateStageList(order);
             }
 
@@ -104,6 +126,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStageItemSelected(Stage item) {
+        currentFragment = viewPager.getCurrentItem();
+
         Intent stageSpecIntent = new Intent(this, StageSpecActivity.class);
         stageSpecIntent.putExtra("stage", item);
         startActivity(stageSpecIntent);
@@ -111,6 +135,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onTrophyItemSelected(Trofeo item) {
+        currentFragment = viewPager.getCurrentItem();
+
         Intent trophySpecIntent = new Intent(this, TrophySpecActivity.class);
         trophySpecIntent.putExtra("trofeo", item);
         startActivity(trophySpecIntent);
@@ -178,6 +204,8 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return fragmentTitle.get(position);
         }
+
+
     }
 
     @Override
@@ -227,7 +255,7 @@ public class MainActivity extends AppCompatActivity
             if (contents != null) {
                 try {
                     JSONObject jsonObject = new JSONObject(contents);
-                        registraStage(jsonObject);
+                    registraStage(jsonObject);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -239,11 +267,13 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == USER_PROFILE) {
             if (resultCode == RESULT_CANCELED) {
                 userLogin.setUtente(null);
+                updateFragment(viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()));
                 Toast.makeText(getApplicationContext(), "Logout effettuato", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == USER_LOGIN) {
             if (resultCode == RESULT_OK) {
                 updateUser(data.getStringExtra("email"));
+                updateFragment(viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()));
                 Toast.makeText(getApplicationContext(), "Login effettuato", Toast.LENGTH_SHORT).show();
             }
         }
@@ -292,9 +322,11 @@ public class MainActivity extends AppCompatActivity
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Fragment fragment = viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
                         switch (response) {
                             case "stage iniziato":
                                 updateUser(userLogin.getUtente().getEmail());
+                                updateFragment(fragment);
                                 Toast.makeText(getApplicationContext(), "Stage iniziato",
                                         Toast.LENGTH_SHORT).show();
                                 break;
@@ -304,6 +336,8 @@ public class MainActivity extends AppCompatActivity
                                 break;
                             case "stage terminato":
                                 updateUser(userLogin.getUtente().getEmail());
+                                updateFragment(fragment);
+                                controllaTrofei();
                                 Toast.makeText(getApplicationContext(), "Stage terminato",
                                         Toast.LENGTH_SHORT).show();
                                 break;
@@ -331,4 +365,78 @@ public class MainActivity extends AppCompatActivity
         };
         queue.addToRequestQueue(request);
     }
+
+    public void updateFragment(Fragment fragment) {
+        if (fragment instanceof StageFragment) {
+            ((StageFragment) fragment).updateStageList(spinner.getSelectedItem().toString());
+        } else if (fragment instanceof UserRankFragment) {
+            ((UserRankFragment) fragment).updateRankList();
+        } else if (fragment instanceof TrophyFragment) {
+            ((TrophyFragment) fragment).updateTrophyList();
+        }
+    }
+
+    public void controllaTrofei() {
+        final String trofeo_id;
+
+        switch (userLogin.getUtente().getStages_end().size()) {
+            case 0:
+                trofeo_id = "T001";
+                break;
+            case 4:
+                trofeo_id = "T002";
+                break;
+            case 9:
+                trofeo_id = "T003";
+                break;
+            case 14:
+                trofeo_id = "T004";
+                break;
+            case 19:
+                trofeo_id = "T005";
+                break;
+            default:
+                trofeo_id = null;
+                break;
+        }
+
+        String url = queue.getURL() + "/user/" + userLogin.getUtente().getEmail() + "/trofeo/aggiungi";
+
+        if (trofeo_id != null) {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            if (response.equals("trofeo aggiunto")) {
+                                Fragment fragment = viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
+                                updateUser(userLogin.getUtente().getEmail());
+                                if (fragment instanceof TrophyFragment) {
+                                    ((TrophyFragment) fragment).updateTrophyList();
+                                }
+
+                                Intent intent = new Intent(getApplicationContext(), TrophyWinActivity.class);
+                                TrophyFragment trophyFragment = (TrophyFragment) viewPagerAdapter.getRegisteredFragment(1);
+                                intent.putExtra("nome", trophyFragment.getNomeTrofeo(trofeo_id));
+                                startActivity(intent);
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("trofeo_id", trofeo_id);
+                    return map;
+                }
+            };
+            queue.addToRequestQueue(stringRequest);
+        }
+    }
+
 }

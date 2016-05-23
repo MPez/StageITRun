@@ -68,8 +68,10 @@ public class StageFragment extends ListFragment {
 
     public void updateStageList(String order) {
         queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
-        String url = queue.getURL() + "/stage/"
-                + userLogin.getUtente().getEmail() + "/" + order;
+        String url = queue.getURL() + "/stage/";
+        if (userLogin.getUtente() != null) {
+                    url += userLogin.getUtente().getEmail() + "/" + order;
+        }
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 url, null,

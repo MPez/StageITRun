@@ -24,15 +24,14 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/activity_title_login" >
-        </activity>
+            android:label="@string/activity_title_login"></activity>
         <activity
             android:name=".RegisterActivity"
             android:label="@string/activity_register_title"
             android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACIVITY"
-                android:value="it.unipd.mpezzutt.stageitrun.LoginActivity"/>
+                android:value="it.unipd.mpezzutt.stageitrun.LoginActivity" />
         </activity>
         <activity
             android:name=".StageSpecActivity"
@@ -58,6 +57,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.unipd.mpezzutt.stageitrun.MainActivity" />
+        </activity>
+        <activity
+            android:name=".TrophyWinActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog">
         </activity>
     </application>
 
