@@ -9,12 +9,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -32,7 +32,6 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +50,6 @@ public class MainActivity extends AppCompatActivity
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
     private Spinner spinner;
-
-    private int currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,26 +75,8 @@ public class MainActivity extends AppCompatActivity
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String order = parent.getItemAtPosition(position).toString();
                 StageFragment stageFragment = (StageFragment) viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
-
-                switch (order) {
-                    case "Abc \u2191":
-                        order = "abc/asc";
-                        break;
-                    case "Abc \u2193":
-                        order = "abc/desc";
-                        break;
-                    case "Coda \u2191":
-                        order = "coda/asc";
-                        break;
-                    case "Coda \u2193":
-                        order = "coda/desc";
-                        break;
-                    default:
-                        break;
-                }
-                stageFragment.updateStageList(order);
+                stageFragment.updateStageList(getOrder(parent.getItemAtPosition(position).toString()));
             }
 
             @Override
@@ -126,8 +105,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStageItemSelected(Stage item) {
-        currentFragment = viewPager.getCurrentItem();
-
         Intent stageSpecIntent = new Intent(this, StageSpecActivity.class);
         stageSpecIntent.putExtra("stage", item);
         startActivity(stageSpecIntent);
@@ -135,8 +112,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onTrophyItemSelected(Trofeo item) {
-        currentFragment = viewPager.getCurrentItem();
-
         Intent trophySpecIntent = new Intent(this, TrophySpecActivity.class);
         trophySpecIntent.putExtra("trofeo", item);
         startActivity(trophySpecIntent);
@@ -299,7 +274,7 @@ public class MainActivity extends AppCompatActivity
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, error.toString(),
+                        Toast.makeText(MainActivity.this, "update user" + error.toString(),
                                 Toast.LENGTH_LONG).show();
                     }
                 });
@@ -347,7 +322,7 @@ public class MainActivity extends AppCompatActivity
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.toString(),
+                        Toast.makeText(getApplicationContext(), "registra stage" + error.toString(),
                                 Toast.LENGTH_LONG).show();
                     }
                 }) {
@@ -368,12 +343,32 @@ public class MainActivity extends AppCompatActivity
 
     public void updateFragment(Fragment fragment) {
         if (fragment instanceof StageFragment) {
-            ((StageFragment) fragment).updateStageList(spinner.getSelectedItem().toString());
+            ((StageFragment) fragment).updateStageList(getOrder(spinner.getSelectedItem().toString()));
         } else if (fragment instanceof UserRankFragment) {
             ((UserRankFragment) fragment).updateRankList();
         } else if (fragment instanceof TrophyFragment) {
             ((TrophyFragment) fragment).updateTrophyList();
         }
+    }
+
+    public String getOrder(String order) {
+        switch (order) {
+            case "Abc \u2191":
+                order = "abc/asc";
+                break;
+            case "Abc \u2193":
+                order = "abc/desc";
+                break;
+            case "Coda \u2191":
+                order = "coda/asc";
+                break;
+            case "Coda \u2193":
+                order = "coda/desc";
+                break;
+            default:
+                break;
+        }
+        return order;
     }
 
     public void controllaTrofei() {
@@ -424,7 +419,7 @@ public class MainActivity extends AppCompatActivity
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(),
+                            Toast.makeText(getApplicationContext(), "controlla trofeo" + error.toString(),
                                     Toast.LENGTH_LONG).show();
                         }
                     }) {

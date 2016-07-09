@@ -3,6 +3,7 @@ package it.unipd.mpezzutt.stageitrun;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,8 @@ public class StageFragment extends ListFragment {
         queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
         String url = queue.getURL() + "/stage/";
         if (userLogin.getUtente() != null) {
-                    url += userLogin.getUtente().getEmail() + "/" + order;
+            url += userLogin.getUtente().getEmail() + "/" + order;
+            Log.d("update stage list", "order: " + order);
         }
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
@@ -92,7 +94,8 @@ public class StageFragment extends ListFragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "update stage list" + error.toString(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
         queue.addToRequestQueue(jsonArrayRequest);

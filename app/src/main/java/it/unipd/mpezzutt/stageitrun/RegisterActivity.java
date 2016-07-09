@@ -154,7 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(RegisterActivity.this, error.toString(),
+                            Toast.makeText(RegisterActivity.this, "attempt register" + error.toString(),
                                     Toast.LENGTH_LONG).show();
                         }
                     }) {

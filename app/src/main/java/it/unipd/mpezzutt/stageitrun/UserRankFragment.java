@@ -87,7 +87,8 @@ public class UserRankFragment extends ListFragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "update rank list" + error.toString(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
         queue.addToRequestQueue(jsonArrayRequest);

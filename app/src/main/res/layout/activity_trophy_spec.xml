@@ -10,29 +10,45 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="it.unipd.mpezzutt.stageitrun.TrophySpecActivity">
 
-    <ImageView
-        android:id="@+id/trophyImageSpec"
-        android:src="@drawable/trophy"
-        android:layout_width="wrap_content"
-        android:layout_height="240dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center_horizontal"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/scrollView" >
 
-    <TextView
-        android:id="@+id/trophyNameSpec"
-        android:text="@string/nome_trofeo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/small_padding"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/trophyDescriptionSpec"
-        android:text="@string/descrizione_trofeo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/small_padding"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <ImageView
+                android:id="@+id/trophyImageSpec"
+                android:src="@drawable/trophy"
+                android:layout_width="wrap_content"
+                android:layout_height="240dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/trophyNameSpec"
+                android:text="@string/nome_trofeo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/small_padding"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <TextView
+                android:id="@+id/trophyDescriptionSpec"
+                android:text="@string/descrizione_trofeo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/small_padding"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+        </LinearLayout>
+
+    </ScrollView>
+
 
 </LinearLayout>
