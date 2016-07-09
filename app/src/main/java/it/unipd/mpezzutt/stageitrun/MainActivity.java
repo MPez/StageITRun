@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     spinner.setVisibility(View.VISIBLE);
                 }
+
+                updateFragment(viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()));
             }
         });
 

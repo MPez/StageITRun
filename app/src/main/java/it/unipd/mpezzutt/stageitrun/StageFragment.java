@@ -36,7 +36,6 @@ import java.util.List;
 public class StageFragment extends ListFragment {
 
     private UserLogin userLogin;
-    private RequestQueueSingleton queue;
     private List<Stage> stageList;
     private StageListAdapter stageListAdapter;
     private OnStageFragmentInteraction mListener;
@@ -68,11 +67,10 @@ public class StageFragment extends ListFragment {
     }
 
     public void updateStageList(String order) {
-        queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
         String url = queue.getURL() + "/stage/";
         if (userLogin.getUtente() != null) {
             url += userLogin.getUtente().getEmail() + "/" + order;
-            Log.d("update stage list", "order: " + order);
         }
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,

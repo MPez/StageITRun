@@ -53,8 +53,8 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
      */
     public static TrophyFragment newInstance() {
         TrophyFragment fragment = new TrophyFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -62,13 +62,14 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        trophyListAdapter = new TrophyListAdapter(getActivity(), trofeoList);
         updateTrophyList();
     }
 
     public void updateTrophyList() {
         RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
 
-        trophyListAdapter = new TrophyListAdapter(getActivity(), trofeoList);
+
 
         String trofeoUrl = queue.getURL() + "/trophy";
 
@@ -78,6 +79,7 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
+                            trophyListAdapter.clear();
                             for (int i = 0; i < response.length(); i++) {
                                 trophyListAdapter.add(Trofeo.toTrofeo(response.getJSONObject(i)));
                             }
@@ -96,12 +98,6 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
                 });
 
         queue.addToRequestQueue(jsonArrayRequest);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable("trofeoList", (Serializable) trofeoList);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -168,12 +164,10 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
 
     class TrophyListAdapter extends ArrayAdapter<Trofeo> {
         private final Context context;
-        //private final List<Trofeo> trofeoList;
 
         public TrophyListAdapter (Context context, List<Trofeo> trofeoList) {
             super(context, -1, trofeoList);
             this.context = context;
-            //this.trofeoList = trofeoList;
             TrophyFragment.this.trofeoList = trofeoList;
         }
 
@@ -181,16 +175,18 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View itemView = inflater.inflate(R.layout.trophy_list_item, parent, false);
-            
-            Trofeo trofeo = trofeoList.get(position);
-            ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophyImage);
-            if (userLogin.getUtente() != null) {
-                if (userLogin.getUtente().getTrofei().contains(trofeo.getId())) {
-                    trofeoView.setImageResource(R.drawable.trophy_checkmark);
+
+            if (trofeoList != null) {
+                Trofeo trofeo = trofeoList.get(position);
+                ImageView trofeoView = (ImageView) itemView.findViewById(R.id.trophyImage);
+                if (userLogin.getUtente() != null) {
+                    if (userLogin.getUtente().getTrofei().contains(trofeo.getId())) {
+                        trofeoView.setImageResource(R.drawable.trophy_checkmark);
+                    }
                 }
+                TextView nomeView = (TextView) itemView.findViewById(R.id.trophyName);
+                nomeView.setText(trofeo.getNome());
             }
-            TextView nomeView = (TextView) itemView.findViewById(R.id.trophyName);
-            nomeView.setText(trofeo.getNome());
 
             return itemView;
         }
