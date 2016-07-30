@@ -20,7 +20,8 @@ public class RequestQueueSingleton {
     private RequestQueue mRequestQueue;
 
     // URL del server
-    private final String URL = "http://marcopez.ddns.net:3000";
+    private final String URL = "http://192.168.0.131:3000";
+    //private final String URL = "http://marcopez.ddns.net:3000";
 
     private static Context mCtx;
 
