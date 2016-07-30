@@ -1,3 +1,9 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Intent;
@@ -5,6 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import it.unipd.mpezzutt.stageitrun.model.Stage;
+import it.unipd.mpezzutt.stageitrun.model.Utente;
+
+/**
+ * Classe che visualizza il dettaglio di uno stage
+ */
 public class StageSpecActivity extends AppCompatActivity {
 
     @Override

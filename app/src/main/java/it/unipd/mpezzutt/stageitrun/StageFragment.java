@@ -1,9 +1,14 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import it.unipd.mpezzutt.stageitrun.model.Stage;
+
 /**
- * A simple {@link ListFragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnStageFragmentInteraction} interface
- * to handle interaction events.
- * Use the {@link StageFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Classe che gestisce la lista di stage
  */
 public class StageFragment extends ListFragment {
 
@@ -40,16 +41,17 @@ public class StageFragment extends ListFragment {
     private StageListAdapter stageListAdapter;
     private OnStageFragmentInteraction mListener;
 
+    /**
+     * Costruttore
+     */
     public StageFragment() {
         stageList = new ArrayList<>();
         userLogin = UserLogin.getInstance();
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment StageFragment.
+     * Metodo factory che crea e ritorna una nuova istanza della classe
+     * @return nuova istanza della classe
      */
     public static StageFragment newInstance() {
         StageFragment fragment = new StageFragment();
@@ -66,13 +68,20 @@ public class StageFragment extends ListFragment {
         this.setListAdapter(stageListAdapter);
     }
 
+    /**
+     * Aggiorna la lista degli stage effettuando una richiesta al server
+     * @param order tipo di ordinamento richiesto
+     */
     public void updateStageList(String order) {
-        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
+        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity()
+                .getApplicationContext());
         String url = queue.getURL() + "/stage/";
+
         if (userLogin.getUtente() != null) {
             url += userLogin.getUtente().getEmail() + "/" + order;
         }
 
+        // effettua la richiesta al server per ricevere la lista degli stage ordinati
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 url, null,
                 new Response.Listener<JSONArray>() {
@@ -131,19 +140,16 @@ public class StageFragment extends ListFragment {
 
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interfaccia che consente l'interazione tra frgment e activity che lo contiene,
+     * deve essere implementata dalle activity.
      */
     public interface OnStageFragmentInteraction {
         void onStageItemSelected(Stage item);
     }
 
+    /**
+     * Classe adapter che gestisce la visualizzazione della lista di stage
+     */
     class StageListAdapter extends ArrayAdapter<Stage> {
         private final Context context;
 

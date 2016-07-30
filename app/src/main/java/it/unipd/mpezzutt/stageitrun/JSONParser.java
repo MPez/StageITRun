@@ -1,3 +1,9 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import org.json.JSONArray;
@@ -11,38 +17,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import it.unipd.mpezzutt.stageitrun.model.Stage;
+import it.unipd.mpezzutt.stageitrun.model.Trofeo;
+import it.unipd.mpezzutt.stageitrun.model.Utente;
+
 /**
- * Created by marco on 04/04/16.
+ * Parser JSON
  */
 public class JSONParser {
 
-    public List readJSON(JSONObject jsonObject, String tipo) throws JSONException {
-        List list = new ArrayList();
-
-        JSONArray jsonArray = jsonObject.getJSONArray(tipo);
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject obj = jsonArray.getJSONObject(i);
-            switch (tipo) {
-                case "stage":
-                    list.add(Stage.toStage(obj));
-                    break;
-                case "trofeo":
-                    list.add(Trofeo.toTrofeo(obj));
-                    break;
-                case "utente":
-                    list.add(Utente.toUtente(obj));
-                    break;
-            }
-        }
-
-        return list;
-    }
-
+    /**
+     * Legge un array JSON e ritorna una lista di stringhe
+     * @param jsonArray array JSON da leggere
+     * @return lista di stringhe contenute in jsonArray
+     * @throws JSONException
+     */
     public static List<String> toList(JSONArray jsonArray) throws JSONException {
         List<String> list = new ArrayList<>();
 
@@ -55,8 +47,15 @@ public class JSONParser {
         return list;
     }
 
+    /**
+     * Legge un arra JSON e ritorna una mappa di stringhe a stringhe
+     * @param jsonArray array JSON da leggere
+     * @return mappa di stringhe a stringhe contenute in jsonArray
+     * @throws JSONException
+     */
     public static Map<String, String> toMap(JSONArray jsonArray) throws JSONException {
         Map<String, String> map = new HashMap<>();
+
         DateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         DateFormat writeFormat = new SimpleDateFormat("HH:mm:ss");
         writeFormat.setTimeZone(TimeZone.getTimeZone("GMT+04"));

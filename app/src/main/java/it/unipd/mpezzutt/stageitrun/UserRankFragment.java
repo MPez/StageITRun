@@ -1,14 +1,18 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +27,10 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.mpezzutt.stageitrun.model.Utente;
+
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnUserRankFragmentInteraction}
- * interface.
+ * Classe che gestisce la classifica degli utenti
  */
 public class UserRankFragment extends ListFragment {
 
@@ -38,14 +41,17 @@ public class UserRankFragment extends ListFragment {
     private OnUserRankFragmentInteraction mListener;
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Costruttore
      */
     public UserRankFragment() {
         userList = new ArrayList<>();
         userLogin = UserLogin.getInstance();
     }
 
+    /**
+     * Metodo factory che crea e ritorna una nuova istanza della classe
+     * @return nuova istanza della classe
+     */
     public static UserRankFragment newInstance() {
         UserRankFragment fragment = new UserRankFragment();
 //        Bundle args = new Bundle();
@@ -64,10 +70,14 @@ public class UserRankFragment extends ListFragment {
 //        }
     }
 
+    /**
+     * Aggiorna la classifica effettuando una richiesta al server
+     */
     public void updateRankList() {
         queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
         String url = queue.getURL() + "/user/rank";
 
+        // effettua la richiesta al server per ricevere la classifica aggiornata
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 url, null,
                 new Response.Listener<JSONArray>() {
@@ -120,28 +130,33 @@ public class UserRankFragment extends ListFragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interfaccia che consente l'interazione tra frgment e activity che lo contiene,
+     * deve essere implementata dalle activity.
      */
     public interface OnUserRankFragmentInteraction {
         void onUserItemSelected(Utente item);
     }
 
+    /**
+     * Classe adapter che gestisce la visualizzazione della classifica
+     */
     class UserListAdapter extends ArrayAdapter<Utente> {
         private final Context context;
 
+        /**
+         * Costruttore
+         * @param context contesto applicazione
+         * @param userList lista degli utenti
+         */
         public UserListAdapter (Context context, List<Utente> userList) {
             super(context, -1, userList);
             this.context = context;
             UserRankFragment.this.userList = userList;
         }
 
+        /**
+         * Cancella gli elementi della lista utenti
+         */
         public void clear() {
             UserRankFragment.this.userList.clear();
         }
@@ -160,7 +175,6 @@ public class UserRankFragment extends ListFragment {
                 nomeCognome.setText(nome);
                 if (userLogin.getUtente() != null) {
                     if (utente.getEmail().equals(userLogin.getUtente().getEmail())) {
-                        //nomeCognome.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                         stageNum.setTextColor(getResources().getColor(R.color.colorAccent));
                         nomeCognome.setTextColor(getResources().getColor(R.color.colorAccent));
                     }

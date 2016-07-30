@@ -1,3 +1,9 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Intent;
@@ -14,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -37,6 +42,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.unipd.mpezzutt.stageitrun.model.Stage;
+import it.unipd.mpezzutt.stageitrun.model.Trofeo;
+import it.unipd.mpezzutt.stageitrun.model.Utente;
+
+/**
+ * Activity principale
+ */
 public class MainActivity extends AppCompatActivity
         implements StageFragment.OnStageFragmentInteraction,
         TrophyFragment.OnTrophyFragmentInteraction,
@@ -58,9 +70,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // recupera l'utente corrente
         userLogin = UserLogin.getInstance();
 
         if (userLogin.getUtente() == null) {
+            // se l'utente non ha fatto il login, esegue l'activity di login
             Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(loginIntent, USER_LOGIN);
         }
@@ -68,13 +82,16 @@ public class MainActivity extends AppCompatActivity
         viewPager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(viewPager);
 
+        // crea e imposta lo spinner per l'ordinamento della lista stage
         spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_stage, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // recupera il fragment che contiene la lista stage e aggiorna la lista in base all'ordinamento scelto
                 StageFragment stageFragment = (StageFragment) viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
                 stageFragment.updateStageList(getOrder(parent.getItemAtPosition(position).toString()));
             }
@@ -92,6 +109,7 @@ public class MainActivity extends AppCompatActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
 
+                // mostra lo spinner solo quando è aperto il fragment con la lista stage
                 int pos = tab.getPosition();
                 if (pos != 0) {
                     spinner.setVisibility(View.GONE);
@@ -102,9 +120,12 @@ public class MainActivity extends AppCompatActivity
                 updateFragment(viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()));
             }
         });
-
     }
 
+    /**
+     * Richiama l'activity di specifica di uno stage
+     * @param item stage di cui si vuole la specifica
+     */
     @Override
     public void onStageItemSelected(Stage item) {
         Intent stageSpecIntent = new Intent(this, StageSpecActivity.class);
@@ -112,6 +133,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(stageSpecIntent);
     }
 
+    /**
+     * Richiama l'actovity di specifica di un trofeo
+     * @param item trofeo di cui si vuole la specifica
+     */
     @Override
     public void onTrophyItemSelected(Trofeo item) {
         Intent trophySpecIntent = new Intent(this, TrophySpecActivity.class);
@@ -124,6 +149,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Impostazione gestore pagine nel tablayout
+     * @param viewPager
+     */
     private void setupViewPager (ViewPager viewPager) {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         Fragment stageFragment = StageFragment.newInstance();
@@ -135,21 +164,37 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(viewPagerAdapter);
     }
 
+    /**
+     * Classe che rappresenta il gestore delle pagine nel tabLayout
+     */
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragmentList = new ArrayList<>();
         private List<String> fragmentTitle = new ArrayList<>();
-
         private SparseArray<Fragment> registeredFragment = new SparseArray<>();
 
+        /**
+         * Costruttore
+         * @param fm gestore dei fragment
+         */
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
+        /**
+         * Aggiunge un fragment alla lista
+         * @param fragment fragment da aggiungere
+         * @param title titolo del fragment da visualizzare nel tab
+         */
         public void addFragment (Fragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitle.add(title);
         }
 
+        /**
+         * Ritorna il fragment specificato dalla posizione
+         * @param position posizione del fragment da ritornare
+         * @return fragment richiesto
+         */
         public Fragment getRegisteredFragment(int position) {
             return registeredFragment.get(position);
         }
@@ -181,8 +226,6 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return fragmentTitle.get(position);
         }
-
-
     }
 
     @Override
@@ -194,12 +237,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // risponde alla pressione del pulsante per la scansione dei QR code
+        // avviando la scansione solo se l'utente ha effettuato il login
         if (id == R.id.action_qrcode) {
             if (userLogin.getUtente() == null) {
                 Toast.makeText(getApplicationContext(),
@@ -209,8 +250,11 @@ public class MainActivity extends AppCompatActivity
                 IntentIntegrator integrator = new IntentIntegrator(this);
                 integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
             }
-
-        } else if (id == R.id.action_user) {
+        }
+        // risponde alla pressione del pulsante del profilo utente
+        // avviando l'activity che visualizza il profilo utente solo se l'utente ha effettuato il login,
+        // altrimenti apre la pagina di login
+        else if (id == R.id.action_user) {
             if (userLogin.getUtente() != null) {
                 Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
                 startActivityForResult(intent, USER_PROFILE);
@@ -225,7 +269,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // QRCODE scan result
+        // gestisce il risultato dalla scansione del QR code
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             String contents = result.getContents();
@@ -241,13 +285,16 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        // gestisce il risultato della chiusura del profilo utente
         if (requestCode == USER_PROFILE) {
             if (resultCode == RESULT_CANCELED) {
                 userLogin.setUtente(null);
                 updateFragment(viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()));
                 Toast.makeText(getApplicationContext(), "Logout effettuato", Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == USER_LOGIN) {
+        }
+        // gestisce il risultato del login utente
+        else if (requestCode == USER_LOGIN) {
             if (resultCode == RESULT_OK) {
                 updateUser(data.getStringExtra("email"));
                 updateFragment(viewPagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()));
@@ -256,6 +303,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Aggiorna l'utente corrente effettuando una richiesta al server
+     * @param email email dell'utente corrente
+     */
     private void updateUser(String email) {
         queue = RequestQueueSingleton.getInstance(getApplicationContext());
 
@@ -283,6 +334,11 @@ public class MainActivity extends AppCompatActivity
         queue.addToRequestQueue(jsonObjectRequest);
     }
 
+    /**
+     * Registra l'inizio o la fine di uno stage effettuando una richiesta al server
+     * @param jsonObject oggetto JSON che contiene i dati dello stage presi dal QR code
+     * @throws JSONException
+     */
     private void registraStage(final JSONObject jsonObject) throws JSONException {
         queue = RequestQueueSingleton.getInstance(this.getApplicationContext());
 
@@ -343,6 +399,10 @@ public class MainActivity extends AppCompatActivity
         queue.addToRequestQueue(request);
     }
 
+    /**
+     * Aggiorna il contenuto del fragment visualizzato nel tabLayout
+     * @param fragment
+     */
     public void updateFragment(Fragment fragment) {
         if (fragment instanceof StageFragment) {
             ((StageFragment) fragment).updateStageList(getOrder(spinner.getSelectedItem().toString()));
@@ -353,6 +413,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Ritorna il tipo di ordinamento da applicare alla lista stage,
+     * applicando una coversione
+     * @param order ordinamento scelto
+     * @return ordinamento convertito
+     */
     public String getOrder(String order) {
         switch (order) {
             case "Abc \u2191":
@@ -373,6 +439,10 @@ public class MainActivity extends AppCompatActivity
         return order;
     }
 
+    /**
+     * Controlla se l'utente sta per vincere un trofeo,
+     * in caso affermativo lo visualizza e lo registra nel database, altrimenti non fa nulla
+     */
     public void controllaTrofei() {
         final String trofeo_id;
 

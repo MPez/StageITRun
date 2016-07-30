@@ -1,3 +1,9 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.app.Activity;
@@ -5,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+/**
+ * Classe che visualizza il pop up nel momento in cui si vince un trofeo
+ */
 public class TrophyWinActivity extends Activity {
 
     @Override

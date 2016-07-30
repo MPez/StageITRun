@@ -1,3 +1,9 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Intent;
@@ -25,6 +31,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classe che rappresenta il form di registrazione nuovo utente
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private RequestQueueSingleton queue;
@@ -52,6 +61,8 @@ public class RegisterActivity extends AppCompatActivity {
         passwordView.setText(password);
         passwordConfirmView = (EditText) findViewById(R.id.password_register_confirm);
 
+        // imposta il listener per effettuare la registrazione dal campo conferma password
+        // tramite tasto invio
         passwordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -64,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         Button registerButton = (Button) findViewById(R.id.email_register_button);
+        // imposta il listener per effettuare la registrazione tramite pulsante di conferma
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,15 +85,17 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Prova ad effettuare la registrazione del nuovo utente
+     */
     private void attemptRegister() {
-        // Reset errors.
+
         nomeView.setError(null);
         cognomeView.setError(null);
         emailView.setError(null);
         passwordView.setError(null);
         passwordConfirmView.setError(null);
 
-        // Store values at the time of the login attempt.
         final String nome = nomeView.getText().toString();
         final String cognome = cognomeView.getText().toString();
         final String email = emailView.getText().toString();
@@ -91,20 +105,21 @@ public class RegisterActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+        // Controllo password
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             passwordView.setError(getString(R.string.error_invalid_password));
             focusView = passwordView;
             cancel = true;
         }
 
+        // Controllo password di conferma
         if (TextUtils.isEmpty(password_confirm) || !password_confirm.equals(password)) {
             passwordConfirmView.setError(getString(R.string.error_required_password));
             focusView = passwordConfirmView;
             cancel = true;
         }
 
-        // Check for a valid email address.
+        // controllo email
         if (TextUtils.isEmpty(email)) {
             emailView.setError(getString(R.string.error_field_required));
             focusView = emailView;
@@ -115,13 +130,14 @@ public class RegisterActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        // Check for valid nome e cognome
+        // Controllo nome
         if (TextUtils.isEmpty(nome)) {
             nomeView.setError(getString(R.string.error_field_required));
             focusView = nomeView;
             cancel = true;
         }
 
+        // Controllo cognome
         if (TextUtils.isEmpty(cognome)) {
             cognomeView.setError(getString(R.string.error_field_required));
             focusView = cognomeView;
@@ -129,14 +145,14 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            // Errore rilevato: viene evidenziato l'errore
             focusView.requestFocus();
         } else {
 
             queue = RequestQueueSingleton.getInstance(getApplicationContext());
             String userUrl = queue.getURL() + "/user/registra";
 
+            // richiesta di registrazione al server
             StringRequest stringRequest = new StringRequest(Request.Method.POST, userUrl,
                     new Response.Listener<String>() {
                         @Override
@@ -173,13 +189,21 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Controllo validità email
+     * @param email email da verificare
+     * @return true se email valida, false altrimenti
+     */
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
+    /**
+     * Controllo validità password
+     * @param password password da verificare
+     * @return true se password valida, false altrimenti
+     */
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 }

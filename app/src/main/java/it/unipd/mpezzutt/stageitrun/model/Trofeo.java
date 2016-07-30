@@ -1,6 +1,10 @@
-package it.unipd.mpezzutt.stageitrun;
-
-import android.os.Parcelable;
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
+package it.unipd.mpezzutt.stageitrun.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,7 +12,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 
 /**
- * Created by marco on 13/04/16.
+ * Classe che rappresenta un trofeo
  */
 public class Trofeo implements Serializable {
     private String id;
@@ -16,6 +20,13 @@ public class Trofeo implements Serializable {
     private String descrizione;
     private String descrLunga;
 
+    /**
+     * Costruttore
+     * @param id id trofeo
+     * @param nome nome trofeo
+     * @param descrizione descrizione breve trofeo
+     * @param descrLunga descrizione lunga trofeo
+     */
     public Trofeo(String id, String nome, String descrizione, String descrLunga) {
         this.id = id;
         this.nome = nome;
@@ -23,6 +34,12 @@ public class Trofeo implements Serializable {
         this.descrLunga = descrLunga;
     }
 
+    /**
+     * Converte un oggetto JSON in un trofeo
+     * @param object oggetto JSON da convertire
+     * @return nuovo trofeo
+     * @throws JSONException
+     */
     public static Trofeo toTrofeo(JSONObject object) throws JSONException {
         String id = object.getString("_id");
         String nome = object.getString("nome");
@@ -44,23 +61,8 @@ public class Trofeo implements Serializable {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
     public String getDescrLunga() {
         return descrLunga;
     }
 
-    public void setDescrLunga(String descrLunga) {
-        this.descrLunga = descrLunga;
-    }
 }

@@ -1,14 +1,18 @@
-package it.unipd.mpezzutt.stageitrun;
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
+package it.unipd.mpezzutt.stageitrun.model;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
- * Created by marco on 04/04/16.
+ * Classe che rappresenta uno stage
  */
 public class Stage implements Serializable {
     private String id;
@@ -17,14 +21,14 @@ public class Stage implements Serializable {
     private String descrizione;
     private int coda;
 
-    public Stage() {
-        this.id = null;
-        this.nome = null;
-        this.azienda = null;
-        this.descrizione = null;
-        this.coda = 0;
-    }
-
+    /**
+     * Costruttore
+     * @param id id stage
+     * @param nome nome stage
+     * @param azienda nome azienda
+     * @param descrizione descrizione stage
+     * @param coda numero studenti in coda per lo stage
+     */
     public Stage (String id, String nome, String azienda, String descrizione, int coda) {
         this.id = id;
         this.nome = nome;
@@ -33,6 +37,12 @@ public class Stage implements Serializable {
         this.coda = coda;
     }
 
+    /**
+     * Converte un oggetto JSON in uno stage
+     * @param object oggetto JSON da convertire
+     * @return nuovo stage
+     * @throws JSONException
+     */
     public static Stage toStage(JSONObject object) throws JSONException {
         String id = object.getString("_id");
         String nome = object.getString("nome");

@@ -1,3 +1,9 @@
+/**
+ * StageITRun
+ * Progetto per insegnamento Reti Wireless
+ * @since Anno accademico 2015/2016
+ * @author Pezzutti Marco 1084411
+ */
 package it.unipd.mpezzutt.stageitrun;
 
 import android.content.Context;
@@ -21,17 +27,13 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.mpezzutt.stageitrun.model.Trofeo;
+
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TrophyFragment.OnTrophyFragmentInteraction} interface
- * to handle interaction events.
- * Use the {@link TrophyFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Classe che gestisce la griglia di trofei
  */
 public class TrophyFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -40,16 +42,18 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
     TrophyListAdapter trophyListAdapter;
     private OnTrophyFragmentInteraction mListener;
 
+    /**
+     * Costruttore
+     */
     public TrophyFragment() {
         trofeoList = new ArrayList<>();
         userLogin = UserLogin.getInstance();
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Metodo factory che crea e ritorna una nuova istanza della classe
      *
-     * @return A new instance of fragment TrophyFragment.
+     * @return nuova istanza della classe
      */
     public static TrophyFragment newInstance() {
         TrophyFragment fragment = new TrophyFragment();
@@ -66,13 +70,16 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
         updateTrophyList();
     }
 
+    /**
+     * Aggiorna la lista di trofei effettuando una richiesta al server
+     */
     public void updateTrophyList() {
-        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity().getApplicationContext());
-
-
+        RequestQueueSingleton queue = RequestQueueSingleton.getInstance(getActivity()
+                .getApplicationContext());
 
         String trofeoUrl = queue.getURL() + "/trophy";
 
+        // effettua la richiesta la server per ricevere la lista dei trofei
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 trofeoUrl, null,
                 new Response.Listener<JSONArray>() {
@@ -139,6 +146,11 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
         mListener = null;
     }
 
+    /**
+     * Ritorna il nome del trofeo che corrisponde all'id
+     * @param id id del trofeo
+     * @return il nome del trofeo corrispondente all'id
+     */
     public String getNomeTrofeo(String id) {
         for (Trofeo trofeo : trofeoList) {
             if (trofeo.getId().equals(id)) {
@@ -149,19 +161,16 @@ public class TrophyFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interfaccia che consente l'interazione tra fragment e activity che lo contiene,
+     * deve essere implementata dalle activity.
      */
     public interface OnTrophyFragmentInteraction {
         void onTrophyItemSelected(Trofeo item);
     }
 
+    /**
+     * Classe adapter che gestisce la visualizzazione della griglia di trofei
+     */
     class TrophyListAdapter extends ArrayAdapter<Trofeo> {
         private final Context context;
 
